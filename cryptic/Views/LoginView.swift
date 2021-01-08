@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State var email:String = ""
+    @ObservedObject var viewModel:LoginViewModel
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
+    
+    init(socket:Socket) {
+        viewModel = LoginViewModel(socket: socket)
+    }
     var body: some View {
         ZStack{
             Color("BackgroundColor").ignoresSafeArea()
@@ -30,11 +34,14 @@ struct LoginView: View {
                         Spacer()
                         Text("Hi welcome back!\n Log In to manage your infrastructure ").multilineTextAlignment(.center).foregroundColor(.white)
                         Spacer().frame(height: 30)
-                        TextField("  Email", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
+                        TextField("  Username", text: $viewModel.name).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
                         Spacer().frame(height: 30)
-                        SecureField("  Pasword", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
+                        SecureField("  Pasword", text: $viewModel.password).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
                         Spacer().frame(height:30)
                         Button(action: {
+                            viewModel.login { (succsess) in
+                                print("function called")
+                            }
                         }, label: {
                             ZStack{
                                 Image("Gradient").resizable().frame(width: UIScreen.main.bounds.width * 0.8, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
@@ -52,7 +59,7 @@ struct LoginView: View {
                     }
                 }
                 Spacer().frame(height: 5)
-            }
+            }.alert(item: $viewModel.alertWrapper) { $0.alert }
         }
         
         
@@ -61,6 +68,6 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView(socket: Socket())
     }
 }

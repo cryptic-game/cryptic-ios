@@ -6,8 +6,11 @@
 //
 
 import Foundation
-struct Login {
-    func login(credentials:loginCredentials){
-        print("To do login")
-    }
+import Starscream
+
+class Login:Model{
+    var credentials:loginCredentials!
 }
+    
+    
+

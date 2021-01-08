@@ -31,7 +31,7 @@ struct RegisterView: View {
                         Text("Hi welcome!\n Register to start playing cryptic. ").multilineTextAlignment(.center).foregroundColor(.white)
                         Spacer().frame(height: 30)
                         VStack{
-                            TextField("  Email", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
+                            TextField("  Username", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
                             Spacer().frame(height: 30)
                             SecureField("  Pasword", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
                             Spacer().frame(height: 30)

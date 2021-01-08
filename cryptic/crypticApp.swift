@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct crypticApp: App {
+    var socket:Socket = .init()
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            LoginView(socket: socket)
         }
     }
 }

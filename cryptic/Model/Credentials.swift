@@ -8,6 +8,22 @@
 import Foundation
 
 struct loginCredentials:Codable{
-    let email:String
+    let action:String
+    let name:String
+    let password:String
+}
+
+struct Response:Codable{
+    let tag:String?
+    let data:String?
+    let token:String?
+    let online:Int?
+    let error:String?
+    
+}
+
+struct registerCredentials:Codable{
+    let action:String
+    let name:String
     let password:String
 }
