@@ -8,10 +8,10 @@
 import Foundation
 
 final class ContentViewModel: ViewModel, ObservableObject{
-//    @Published var showLogin:Bool = !UserDefaults.standard.bool(forKey: "loggedIn")
-//    @Published var isLoggedIn:Bool = UserDefaults.standard.bool(forKey: "loggedIn")
-    @Published var showLogin:Bool = true
-    @Published var isLoggedIn:Bool = false
+    @Published var showLogin:Bool = !UserDefaults.standard.bool(forKey: "loggedIn")
+    @Published var isLoggedIn:Bool = UserDefaults.standard.bool(forKey: "loggedIn")
+//    @Published var showLogin:Bool = true
+//    @Published var isLoggedIn:Bool = false
     @Published var showRegister:Bool = false
     
     init(socket:Socket) {

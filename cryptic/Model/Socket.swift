@@ -16,6 +16,7 @@ class Socket:WebSocketDelegate {
     let decoder = JSONDecoder()
     var viewModel:ViewModel?
     var content:ContentViewModel?
+    var defaults = UserDefaults.standard
     
     init() {
         
@@ -47,7 +48,13 @@ class Socket:WebSocketDelegate {
         print("got some data: \(data)")
     }
     func websocketDidConnect(socket: WebSocketClient) {
-        
+        do {
+            let data = try encoder.encode(LoginToken(action: "session", token: defaults.string(forKey: "token") ?? " "))
+            self.connection.write(string: String(data: data, encoding: .utf8)!)
+        }catch let error {
+            print(" Error serializing JSON:\n\(error)")
+            
+        }
         print("websocket is connected")
     }
     

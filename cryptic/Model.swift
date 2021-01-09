@@ -19,7 +19,7 @@ class Model{
             let data = try encoder.encode(credentials)
             socket.connection.write(string: String(data: data, encoding: .utf8)!)
         }catch let error {
-            print("[WEBSOCKET] Error serializing JSON:\n\(error)")
+            print("Error serializing JSON:\n\(error)")
             
         }
     }
@@ -29,7 +29,7 @@ class Model{
             let data = try encoder.encode(credentials)
             socket.connection.write(string: String(data: data, encoding: .utf8)!)
         }catch let error {
-            print("[WEBSOCKET] Error serializing JSON:\n\(error)")
+            print("Error serializing JSON:\n\(error)")
             
         }
     }
@@ -39,7 +39,7 @@ class Model{
             let data = try encoder.encode(Logout(action: "logout"))
             socket.connection.write(string: String(data: data, encoding: .utf8)!)
         }catch let error {
-            print("[WEBSOCKET] Error serializing JSON:\n\(error)")
+            print("Error serializing JSON:\n\(error)")
             
         }
     }

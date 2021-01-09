@@ -32,3 +32,8 @@ struct registerCredentials:Codable{
 struct Logout:Codable{
     let action:String
 }
+
+struct LoginToken:Codable{
+    let action:String
+    let token:String
+}
