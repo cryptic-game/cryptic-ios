@@ -1,0 +1,15 @@
+//
+//  Request.swift
+//  cryptic
+//
+//  Created by Nils Grob on 09.01.21.
+//
+
+import Foundation
+
+struct MSRequest:Codable{
+    let tag:UUID
+    let ms:String
+    let endpoint:[String]
+    let data:Data?
+}

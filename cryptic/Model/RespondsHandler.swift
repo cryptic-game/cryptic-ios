@@ -11,10 +11,12 @@ struct ResponseHandler {
     var defaults = UserDefaults.standard
     var viewModel:ViewModel
     var content:ContentViewModel
+    var MSHandlers:[MSHandler]
     
-    init(viewModel:ViewModel, content: ContentViewModel) {
+    init(viewModel:ViewModel, content: ContentViewModel, msHandlers:[MSHandler]) {
         self.viewModel = viewModel
         self.content = content
+        self.MSHandlers = msHandlers
     }
     func responseHandler(response:Response){
         if(response.error != nil){
@@ -51,6 +53,14 @@ struct ResponseHandler {
                     self.content.showRegister = false
                     }
             }
+        }
+        if(response.tag != nil){
+            for handler in MSHandlers {
+                if(handler.tag == UUID(uuidString: response.tag!)){
+                    handler.receive(response: response.data!)
+                }
+            }
+           
         }
         print("To do handle this data: \(response)")
     }

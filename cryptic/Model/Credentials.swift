@@ -13,16 +13,6 @@ struct loginCredentials:Codable{
     let password:String
 }
 
-struct Response:Codable{
-    let tag:String?
-    let data:String?
-    let token:String?
-    let online:Int?
-    let error:String?
-    let status:String?
-    
-}
-
 struct registerCredentials:Codable{
     let action:String
     let name:String

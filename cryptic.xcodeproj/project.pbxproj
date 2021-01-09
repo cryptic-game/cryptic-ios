@@ -22,6 +22,13 @@
 		E080515525A7AB8000741150 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E080515425A7AB8000741150 /* LoginViewModel.swift */; };
 		E08380A325A8F87D003562F2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08380A225A8F87D003562F2 /* SettingsView.swift */; };
 		E08380A625A8FF65003562F2 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08380A525A8FF65003562F2 /* SettingsViewModel.swift */; };
+		E0A92F5125A9FC3B00277517 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A92F5025A9FC3B00277517 /* Response.swift */; };
+		E0A92F5425A9FC6500277517 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A92F5325A9FC6500277517 /* Request.swift */; };
+		E0A92F5725A9FFFE00277517 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A92F5625A9FFFE00277517 /* Device.swift */; };
+		E0A92F5A25AA00E400277517 /* DeviceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A92F5925AA00E400277517 /* DeviceModel.swift */; };
+		E0A92F5D25AA036E00277517 /* MSHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A92F5C25AA036E00277517 /* MSHandler.swift */; };
+		E0A92F6025AA0A8C00277517 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A92F5F25AA0A8C00277517 /* DashboardViewModel.swift */; };
+		E0A92F6325AA131500277517 /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A92F6225AA131500277517 /* DeviceView.swift */; };
 		E0B334D825A8C3DE00DF574F /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B334D725A8C3DE00DF574F /* ContentViewModel.swift */; };
 		E0B42E6025A720E500EACF92 /* DeviceSpecificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B42E5F25A720E500EACF92 /* DeviceSpecificationView.swift */; };
 		E0B42E6325A7342400EACF92 /* DeviceSpecificFactorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B42E6225A7342400EACF92 /* DeviceSpecificFactorsView.swift */; };
@@ -47,6 +54,13 @@
 		E080515425A7AB8000741150 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		E08380A225A8F87D003562F2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E08380A525A8FF65003562F2 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		E0A92F5025A9FC3B00277517 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
+		E0A92F5325A9FC6500277517 /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		E0A92F5625A9FFFE00277517 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		E0A92F5925AA00E400277517 /* DeviceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModel.swift; sourceTree = "<group>"; };
+		E0A92F5C25AA036E00277517 /* MSHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSHandler.swift; sourceTree = "<group>"; };
+		E0A92F5F25AA0A8C00277517 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		E0A92F6225AA131500277517 /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
 		E0B334D725A8C3DE00DF574F /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		E0B42E5F25A720E500EACF92 /* DeviceSpecificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpecificationView.swift; sourceTree = "<group>"; };
 		E0B42E6225A7342400EACF92 /* DeviceSpecificFactorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSpecificFactorsView.swift; sourceTree = "<group>"; };
@@ -87,6 +101,8 @@
 			isa = PBXGroup;
 			children = (
 				E0B42E6B25A7580400EACF92 /* Credentials.swift */,
+				E0A92F5025A9FC3B00277517 /* Response.swift */,
+				E0A92F5325A9FC6500277517 /* Request.swift */,
 				E00D9AD025A5EF8500899259 /* crypticApp.swift */,
 				E02BE1A925A8AB2B006358EC /* Model.swift */,
 				E02BE1A225A8AA8D006358EC /* ViewModel.swift */,
@@ -116,6 +132,7 @@
 				E0B42E6825A73FC700EACF92 /* RegisterView.swift */,
 				E08380A225A8F87D003562F2 /* SettingsView.swift */,
 				E00D9AF025A6160700899259 /* DashboardView.swift */,
+				E0A92F6225AA131500277517 /* DeviceView.swift */,
 				E0B42E6525A735F500EACF92 /* DeviceRunningProcessesView.swift */,
 				E0B42E6225A7342400EACF92 /* DeviceSpecificFactorsView.swift */,
 				E0B42E5F25A720E500EACF92 /* DeviceSpecificationView.swift */,
@@ -129,6 +146,7 @@
 				E080515425A7AB8000741150 /* LoginViewModel.swift */,
 				E08380A525A8FF65003562F2 /* SettingsViewModel.swift */,
 				E0B334D725A8C3DE00DF574F /* ContentViewModel.swift */,
+				E0A92F5F25AA0A8C00277517 /* DashboardViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -137,6 +155,9 @@
 			isa = PBXGroup;
 			children = (
 				E00D9AED25A6127D00899259 /* Login.swift */,
+				E0A92F5925AA00E400277517 /* DeviceModel.swift */,
+				E0A92F5625A9FFFE00277517 /* Device.swift */,
+				E0A92F5C25AA036E00277517 /* MSHandler.swift */,
 				E002088B25A8761B00D0A7E6 /* Socket.swift */,
 				E02BE19F25A8A6BC006358EC /* RespondsHandler.swift */,
 			);
@@ -223,17 +244,24 @@
 				E0B42E6C25A7580400EACF92 /* Credentials.swift in Sources */,
 				E00D9AE125A5F1FB00899259 /* LoginView.swift in Sources */,
 				E00D9AD325A5EF8500899259 /* ContentView.swift in Sources */,
+				E0A92F5125A9FC3B00277517 /* Response.swift in Sources */,
 				E08380A325A8F87D003562F2 /* SettingsView.swift in Sources */,
+				E0A92F6325AA131500277517 /* DeviceView.swift in Sources */,
 				E0B42E6025A720E500EACF92 /* DeviceSpecificationView.swift in Sources */,
 				E02BE1AA25A8AB2B006358EC /* Model.swift in Sources */,
 				E0B42E6625A735F500EACF92 /* DeviceRunningProcessesView.swift in Sources */,
 				E0B334D825A8C3DE00DF574F /* ContentViewModel.swift in Sources */,
 				E00D9AF125A6160700899259 /* DashboardView.swift in Sources */,
+				E0A92F5725A9FFFE00277517 /* Device.swift in Sources */,
 				E002088C25A8761B00D0A7E6 /* Socket.swift in Sources */,
 				E02BE1A325A8AA8D006358EC /* ViewModel.swift in Sources */,
+				E0A92F6025AA0A8C00277517 /* DashboardViewModel.swift in Sources */,
+				E0A92F5D25AA036E00277517 /* MSHandler.swift in Sources */,
 				E080515525A7AB8000741150 /* LoginViewModel.swift in Sources */,
 				E00D9AD125A5EF8500899259 /* crypticApp.swift in Sources */,
 				E02BE1A025A8A6BC006358EC /* RespondsHandler.swift in Sources */,
+				E0A92F5425A9FC6500277517 /* Request.swift in Sources */,
+				E0A92F5A25AA00E400277517 /* DeviceModel.swift in Sources */,
 				E00D9AEE25A6127D00899259 /* Login.swift in Sources */,
 				E08380A625A8FF65003562F2 /* SettingsViewModel.swift in Sources */,
 			);

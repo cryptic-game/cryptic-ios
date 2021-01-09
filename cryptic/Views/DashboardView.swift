@@ -11,9 +11,12 @@ struct DashboardView: View {
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
     let socket:Socket
-    @State var chosen:Int = 0
+    let viewModel:DashboardViewModel
+    
+    @State var chosen:Int = -1
     init(socket:Socket) {
         self.socket = socket
+        self.viewModel = DashboardViewModel(device: DeviceModel(uuid: UUID(), name: "Test", owner: UUID(), powered_on: true, starter_device: true, hardware: []), socket: socket)
     }
     var body: some View {
         ZStack{
@@ -62,27 +65,7 @@ struct DashboardView: View {
                 }
                 VStack(alignment: .leading){
                     if(chosen == 0){
-                        HStack{
-                            Spacer()
-                            VStack{
-                                Image("ComputerOnline")
-                                Text("Kore").foregroundColor(.white).bold().font(.title)
-                                Spacer().frame(height: 40)
-                                
-                                
-                            }
-                            Spacer()
-                            Image("OnButton").resizable().frame(width: 100, height: 100)
-                            Spacer()
-                        }
-                        
-                        TabView{
-                            DeviceSpecificationView()
-                            DeviceSpecificFactorsView()
-                            DeviceRunningProcessesView()
-                        }.tabViewStyle(PageTabViewStyle())
-                            
-                        
+                        DeviceView(socket:socket)
                     }else if(chosen == 3){
                         SettingsView(socket: socket)
                     }
@@ -90,6 +73,16 @@ struct DashboardView: View {
                 Spacer()
                 }
                 
+            }.onAppear{
+                
+                if(socket.didConnectProperly){
+                    viewModel.getAll()
+                    print("Hee")
+                }else{
+                    print("socket isnt yet connectet")
+                }
+                
+                print("Apper")
             }
             
         }

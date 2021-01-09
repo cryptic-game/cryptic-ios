@@ -17,13 +17,15 @@ class Socket:WebSocketDelegate {
     var viewModel:ViewModel?
     var content:ContentViewModel?
     var defaults = UserDefaults.standard
-    
+    var didConnectProperly = false
+    var msHandlers:[MSHandler]
     init() {
         
         //connection = WebSocket(url: URL(string: "wss://ws.test.cryptic-game.net")!)
         connection = WebSocket(url: URL(string: "ws://127.0.0.1/")!)
         viewModel = nil
         content = nil
+        msHandlers = []
         connection.delegate = self
         connection.connect()
     }
@@ -33,7 +35,7 @@ class Socket:WebSocketDelegate {
         do {
             let jsonData = text.data(using: .utf8)!
             let data = try decoder.decode(Response.self, from: jsonData)
-            ResponseHandler(viewModel: viewModel!, content: content!).responseHandler(response: data)
+            ResponseHandler(viewModel: viewModel!, content: content!, msHandlers: msHandlers).responseHandler(response: data)
             
             
         } catch let error {
@@ -48,6 +50,7 @@ class Socket:WebSocketDelegate {
         print("got some data: \(data)")
     }
     func websocketDidConnect(socket: WebSocketClient) {
+        print("websocket is connected")
         do {
             let data = try encoder.encode(LoginToken(action: "session", token: defaults.string(forKey: "token") ?? " "))
             self.connection.write(string: String(data: data, encoding: .utf8)!)
@@ -55,7 +58,8 @@ class Socket:WebSocketDelegate {
             print(" Error serializing JSON:\n\(error)")
             
         }
-        print("websocket is connected")
+        didConnectProperly = true
+        
     }
     
     func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
