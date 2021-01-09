@@ -9,8 +9,10 @@ import SwiftUI
 
 struct LoginView: View {
     @ObservedObject var viewModel:LoginViewModel
+    @EnvironmentObject var content:ContentViewModel
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
+    
     
     init(socket:Socket) {
         viewModel = LoginViewModel(socket: socket)
@@ -51,7 +53,15 @@ struct LoginView: View {
                         VStack{
                             Text("Don't have an account yet?").foregroundColor(.gray)
                             Text("Create Account").foregroundColor(.gray).bold().onTapGesture {
-                                //ToDo: Show register page
+                                print("clicked")
+                                
+                                DispatchQueue.main.async {
+                                    print("not changed values\(content.showLogin)")
+                                    self.content.showLogin = false
+                                    self.content.showRegister = true
+                                    print("changed values\(content.showLogin)")
+                                   
+                                }
                             }
                         }
                        Spacer()

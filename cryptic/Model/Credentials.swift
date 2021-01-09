@@ -19,6 +19,7 @@ struct Response:Codable{
     let token:String?
     let online:Int?
     let error:String?
+    let status:String?
     
 }
 
@@ -26,4 +27,8 @@ struct registerCredentials:Codable{
     let action:String
     let name:String
     let password:String
+}
+
+struct Logout:Codable{
+    let action:String
 }

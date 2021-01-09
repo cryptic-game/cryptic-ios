@@ -4,13 +4,24 @@
 //
 //  Created by Nils Grob on 06.01.21.
 //
-
+import Foundation
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var content:ContentViewModel
+    //var socket:Socket = .init()
+    func retournValues(){
+        print("From Content View:\(content.isLoggedIn)")
+    }
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        if(content.showLogin){
+            LoginView(socket: content.model.socket)
+        }else if(content.showRegister){
+            RegisterView()
+        }else if(content.isLoggedIn){
+            DashboardView(socket:content.model.socket)
+        }
     }
 }
 

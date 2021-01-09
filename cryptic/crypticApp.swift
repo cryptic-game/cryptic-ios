@@ -11,8 +11,11 @@ import SwiftUI
 struct crypticApp: App {
     var socket:Socket = .init()
     var body: some Scene {
+        let settings = ContentViewModel(socket: socket)
         WindowGroup {
-            LoginView(socket: socket)
+            ContentView().environmentObject(settings)
+            //DashboardView()
+            //LoginView(socket: socket)
         }
     }
 }

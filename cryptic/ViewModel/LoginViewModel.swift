@@ -13,14 +13,14 @@ struct AlertWrapper: Identifiable {
   let alert: Alert
 }
 
-class LoginViewModel:ViewModel, ObservableObject{
+final class LoginViewModel:ViewModel, ObservableObject{
     var name:String = ""
     var password:String = ""
     
 
     init(socket:Socket) {
         super.init(model: Model(socket: socket))
-        super.model.socket.loginViewModel = self
+        super.model.socket.viewModel = self
     }
     
     

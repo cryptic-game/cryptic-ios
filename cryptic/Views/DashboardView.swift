@@ -10,7 +10,11 @@ import SwiftUI
 struct DashboardView: View {
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
+    let socket:Socket
     @State var chosen:Int = 0
+    init(socket:Socket) {
+        self.socket = socket
+    }
     var body: some View {
         ZStack{
             Color("BackgroundColor").ignoresSafeArea()
@@ -60,16 +64,15 @@ struct DashboardView: View {
                     if(chosen == 0){
                         HStack{
                             Spacer()
-                            Image("ComputerOnline")
                             VStack{
-                                
+                                Image("ComputerOnline")
                                 Text("Kore").foregroundColor(.white).bold().font(.title)
                                 Spacer().frame(height: 40)
                                 
                                 
                             }
-                           
-                            Image("OnButton").resizable().frame(width: 50, height: 50)
+                            Spacer()
+                            Image("OnButton").resizable().frame(width: 100, height: 100)
                             Spacer()
                         }
                         
@@ -80,10 +83,12 @@ struct DashboardView: View {
                         }.tabViewStyle(PageTabViewStyle())
                             
                         
+                    }else if(chosen == 3){
+                        SettingsView(socket: socket)
                     }
                 }
                 Spacer()
-            }
+                }
                 
             }
             
@@ -94,6 +99,6 @@ struct DashboardView: View {
 
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        DashboardView(socket: Socket())
     }
 }

@@ -14,13 +14,15 @@ class Socket:WebSocketDelegate {
     var connection: WebSocket!
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
-    var loginViewModel:LoginViewModel?
+    var viewModel:ViewModel?
+    var content:ContentViewModel?
     
     init() {
         
         //connection = WebSocket(url: URL(string: "wss://ws.test.cryptic-game.net")!)
         connection = WebSocket(url: URL(string: "ws://127.0.0.1/")!)
-        loginViewModel = nil
+        viewModel = nil
+        content = nil
         connection.delegate = self
         connection.connect()
     }
@@ -30,7 +32,7 @@ class Socket:WebSocketDelegate {
         do {
             let jsonData = text.data(using: .utf8)!
             let data = try decoder.decode(Response.self, from: jsonData)
-            ResponseHandler(viewModel: loginViewModel!).responseHandler(response: data)
+            ResponseHandler(viewModel: viewModel!, content: content!).responseHandler(response: data)
             
             
         } catch let error {
@@ -50,7 +52,7 @@ class Socket:WebSocketDelegate {
     }
     
     func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
-        loginViewModel?.showAlert(error: "Check your internet connection!")
+        viewModel?.showAlert(error: "Check your internet connection!")
         print("websocket is disconnected: \(String(describing: error?.localizedDescription))")
     }
     
