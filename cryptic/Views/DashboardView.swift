@@ -73,16 +73,6 @@ struct DashboardView: View {
                 Spacer()
                 }
                 
-            }.onAppear{
-                
-                if(socket.didConnectProperly){
-                    viewModel.getAll()
-                    
-                }else{
-                    print("socket isnt yet connectet")
-                }
-                
-                print("Apper")
             }
             
         }

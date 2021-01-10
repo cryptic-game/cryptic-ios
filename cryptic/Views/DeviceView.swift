@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DeviceView: View {
     @ObservedObject var viewModel:DashboardViewModel
+    @State var isLoading = false
     let socket:Socket
     
     init(socket:Socket) {
@@ -17,26 +18,34 @@ struct DeviceView: View {
     }
     var body: some View {
         VStack{
-            HStack{
-                Spacer()
-                VStack{
-                    Image("ComputerOnline")
-                    Text(viewModel.device?.name ?? "").foregroundColor(.white).bold().font(.title)
-                    Spacer().frame(height: 40)
-                    
-                    
+            if(viewModel.isLoading){
+                VStack {
+                    Text("Loading...").foregroundColor(.gray)
+                    ProgressView().progressViewStyle(CircularProgressViewStyle()).foregroundColor(.white)
                 }
-                Spacer()
-                Image("OnButton").resizable().frame(width: 100, height: 100)
-                Spacer()
-            }
-            
-            TabView{
-                DeviceSpecificationView()
-                DeviceSpecificFactorsView()
-                DeviceRunningProcessesView()
-            }.tabViewStyle(PageTabViewStyle())
-        }.background(Color("BackgroundColor")).onAppear{
+            }else{
+                HStack{
+                    Spacer()
+                    VStack{
+                        Image("ComputerOnline")
+                        Text(viewModel.device?.name ?? "").foregroundColor(.white).bold().font(.title)
+                        Spacer().frame(height: 40)
+                        
+                        
+                    }
+                    Spacer()
+                    Image("OnButton").resizable().frame(width: 100, height: 100)
+                    Spacer()
+                }
+                
+                TabView{
+                    DeviceSpecificationView()
+                    DeviceSpecificFactorsView()
+                    DeviceRunningProcessesView()
+                }.tabViewStyle(PageTabViewStyle())
+                }
+            }.background(Color("BackgroundColor")).onAppear{
+            isLoading = true
             if(socket.didConnectProperly){
                 viewModel.getAll()
             }else{

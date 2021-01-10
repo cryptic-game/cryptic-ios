@@ -9,9 +9,11 @@ import Foundation
 
 final class DashboardViewModel:ViewModel, ObservableObject {
     @Published var device:DeviceModel?
+    @Published var isLoading:Bool
     
     init(socket:Socket) {
         self.device = nil
+        self.isLoading = true
         super.init(model: Device(socket: socket))
         super.model.socket.viewModel = self
         let mod = super.model as! Device

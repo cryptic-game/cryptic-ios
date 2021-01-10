@@ -22,6 +22,7 @@ class Device:Model{
         }
         DispatchQueue.main.async {
             self.viewModel?.device = data.devices![0]
+            self.viewModel?.isLoading = false
         }
         
     }
