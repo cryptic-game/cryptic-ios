@@ -43,7 +43,7 @@ class Model{
             
         }
     }
-    func receive(data:String){
+    func receive(data:ResponseData){
         print("\(data)")
     }
 }

@@ -12,7 +12,7 @@ class MSHandler: ObservableObject{
     let tag:UUID
     let request:Data
     let model:Model
-    var response:String?{
+    var response:ResponseData?{
         didSet{
             model.receive(data: response!)
         }
@@ -30,7 +30,7 @@ class MSHandler: ObservableObject{
         socket.connection.write(string: String(data: request, encoding: .utf8)!)
     }
     
-    func receive(response:String){
+    func receive(response:ResponseData){
         self.response = response
     }
 }

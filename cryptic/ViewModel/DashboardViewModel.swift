@@ -7,14 +7,15 @@
 
 import Foundation
 
-class DashboardViewModel:ViewModel, ObservableObject {
-    @Published var device:DeviceModel
+final class DashboardViewModel:ViewModel, ObservableObject {
+    @Published var device:DeviceModel?
     
-    init(device:DeviceModel, socket:Socket) {
-        self.device = device
+    init(socket:Socket) {
+        self.device = nil
         super.init(model: Device(socket: socket))
         super.model.socket.viewModel = self
-        
+        let mod = super.model as! Device
+        mod.viewModel = self
     }
     
     func getAll() {

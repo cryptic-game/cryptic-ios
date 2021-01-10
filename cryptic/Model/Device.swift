@@ -8,16 +8,44 @@
 import Foundation
 
 class Device:Model{
+    var viewModel:DashboardViewModel?
     
-    override func receive(data: String) {
-        print("\(data)")
-        print("Decode this shit")
+    override init(socket:Socket) {
+        self.viewModel = nil
+        super.init(socket: socket)
+        
+    }
+    override func receive(data: ResponseData) {
+        for device in data.devices!{
+            //To Do. get info of all devices
+            print(device)
+        }
+        DispatchQueue.main.async {
+            self.viewModel?.device = data.devices![0]
+        }
+        
     }
     
     func getAll() -> (){
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: "device/all", data:nil))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "all"], data:MSData(data: nil)))
+            print(String(data: req, encoding: .utf8)!)
+            let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
+            socket.msHandlers.append(handler)
+            handler.send()
+            
+        }catch let error {
+            print("Error serializing JSON:\n\(error)")
+            
+        }
+    }
+    
+    func getInfo(){
+        do {
+            let uuid = UUID()
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "info"], data:MSData(data: nil)))
+            print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
             handler.send()

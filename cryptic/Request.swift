@@ -11,5 +11,11 @@ struct MSRequest:Codable{
     let tag:UUID
     let ms:String
     let endpoint:[String]
+    let data:MSData
+}
+
+struct MSData:Codable{
     let data:Data?
 }
+
+

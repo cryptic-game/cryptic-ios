@@ -16,7 +16,7 @@ struct DashboardView: View {
     @State var chosen:Int = -1
     init(socket:Socket) {
         self.socket = socket
-        self.viewModel = DashboardViewModel(device: DeviceModel(uuid: UUID(), name: "Test", owner: UUID(), powered_on: true, starter_device: true, hardware: []), socket: socket)
+        self.viewModel = DashboardViewModel(socket: socket)
     }
     var body: some View {
         ZStack{
@@ -77,7 +77,7 @@ struct DashboardView: View {
                 
                 if(socket.didConnectProperly){
                     viewModel.getAll()
-                    print("Hee")
+                    
                 }else{
                     print("socket isnt yet connectet")
                 }

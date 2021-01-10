@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct DeviceView: View {
-    let viewModel:DashboardViewModel
+    @ObservedObject var viewModel:DashboardViewModel
     let socket:Socket
     
     init(socket:Socket) {
         self.socket = socket
-        self.viewModel = DashboardViewModel(device: DeviceModel(uuid: UUID(), name: "Test", owner: UUID(), powered_on: true, starter_device: true, hardware: []), socket: socket)
+        self.viewModel = DashboardViewModel(socket: socket)
     }
     var body: some View {
         VStack{
@@ -21,7 +21,7 @@ struct DeviceView: View {
                 Spacer()
                 VStack{
                     Image("ComputerOnline")
-                    Text(viewModel.device.name).foregroundColor(.white).bold().font(.title)
+                    Text(viewModel.device?.name ?? "").foregroundColor(.white).bold().font(.title)
                     Spacer().frame(height: 40)
                     
                     
