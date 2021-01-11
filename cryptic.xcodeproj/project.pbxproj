@@ -21,6 +21,7 @@
 		E0528FB125ACAC3A006E7018 /* DesktopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FB025ACAC3A006E7018 /* DesktopView.swift */; };
 		E0528FB425ACB104006E7018 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FB325ACB104006E7018 /* TerminalView.swift */; };
 		E0528FDB25ACDEAD006E7018 /* TerminalOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FDA25ACDEAD006E7018 /* TerminalOutput.swift */; };
+		E0528FE025ACF037006E7018 /* TerminalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FDF25ACF037006E7018 /* TerminalViewModel.swift */; };
 		E080515225A7A8B500741150 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = E080515125A7A8B500741150 /* Starscream */; };
 		E080515525A7AB8000741150 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E080515425A7AB8000741150 /* LoginViewModel.swift */; };
 		E08380A325A8F87D003562F2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08380A225A8F87D003562F2 /* SettingsView.swift */; };
@@ -57,6 +58,7 @@
 		E0528FB025ACAC3A006E7018 /* DesktopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopView.swift; sourceTree = "<group>"; };
 		E0528FB325ACB104006E7018 /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		E0528FDA25ACDEAD006E7018 /* TerminalOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TerminalOutput.swift; path = Views/TerminalOutput.swift; sourceTree = "<group>"; };
+		E0528FDF25ACF037006E7018 /* TerminalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TerminalViewModel.swift; path = cryptic/Views/TerminalViewModel.swift; sourceTree = SOURCE_ROOT; };
 		E080515425A7AB8000741150 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		E08380A225A8F87D003562F2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E08380A525A8FF65003562F2 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 		E00D9AEA25A611FC00899259 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				E0528FDF25ACF037006E7018 /* TerminalViewModel.swift */,
 				E080515425A7AB8000741150 /* LoginViewModel.swift */,
 				E08380A525A8FF65003562F2 /* SettingsViewModel.swift */,
 				E0B334D725A8C3DE00DF574F /* ContentViewModel.swift */,
@@ -250,6 +253,7 @@
 			files = (
 				E0528FB425ACB104006E7018 /* TerminalView.swift in Sources */,
 				E0B42E6925A73FC700EACF92 /* RegisterView.swift in Sources */,
+				E0528FE025ACF037006E7018 /* TerminalViewModel.swift in Sources */,
 				E0B42E6325A7342400EACF92 /* DeviceSpecificFactorsView.swift in Sources */,
 				E0B42E6C25A7580400EACF92 /* Credentials.swift in Sources */,
 				E00D9AE125A5F1FB00899259 /* LoginView.swift in Sources */,

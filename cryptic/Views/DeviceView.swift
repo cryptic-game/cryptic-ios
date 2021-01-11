@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DeviceView: View {
     @ObservedObject var viewModel:DashboardViewModel
+    @EnvironmentObject var content:ContentViewModel
     @State var isLoading = false
     let socket:Socket
     
@@ -27,7 +28,10 @@ struct DeviceView: View {
                 HStack{
                     Spacer()
                     VStack{
-                        Image("ComputerOnline")
+                        Image("ComputerOnline").onTapGesture {
+                            DispatchQueue.main.async {                            content.showDesktop = true
+                            }
+                        }
                         Text(viewModel.device?.name ?? "").foregroundColor(.white).bold().font(.title)
                         Spacer().frame(height: 40)
                         

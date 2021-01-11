@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct DesktopView: View {
+    let socket:Socket
+    init(socket:Socket) {
+        self.socket = socket
+    }
     var body: some View {
         TabView{
-            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "terminal") }
-            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "externaldrive.connected.to.line.below") }
-            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "folder") }
-            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "bitcoinsign.circle") }
-            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "folder") }
-            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "folder") }
+            TerminalView(socket:socket).tabItem { Image(systemName: "terminal") }
+            TerminalView(socket:socket).tabItem { Image(systemName: "externaldrive.connected.to.line.below") }
+            TerminalView(socket:socket).tabItem { Image(systemName: "folder") }
+            TerminalView(socket:socket).tabItem { Image(systemName: "bitcoinsign.circle") }
+            TerminalView(socket:socket).tabItem { Image(systemName: "folder") }
+            TerminalView(socket:socket).tabItem { Image(systemName: "folder") }
 
         }
     }
@@ -23,6 +27,6 @@ struct DesktopView: View {
 
 struct DesktopView2_Previews: PreviewProvider {
     static var previews: some View {
-        DesktopView()
+        DesktopView(socket:Socket())
     }
 }

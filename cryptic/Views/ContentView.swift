@@ -20,7 +20,12 @@ struct ContentView: View {
         }else if(content.showRegister){
             RegisterView()
         }else if(content.isLoggedIn){
-            DashboardView(socket:content.model.socket)
+            if(content.showDesktop){
+                DesktopView(socket: content.model.socket)
+            }else{
+                DashboardView(socket:content.model.socket)
+            }
+            
         }
     }
 }

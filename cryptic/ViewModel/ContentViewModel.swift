@@ -13,6 +13,7 @@ final class ContentViewModel: ViewModel, ObservableObject{
 //    @Published var showLogin:Bool = true
 //    @Published var isLoggedIn:Bool = false
     @Published var showRegister:Bool = false
+    @Published var showDesktop:Bool = false
     
     init(socket:Socket) {
         super.init(model: Model(socket: socket))
