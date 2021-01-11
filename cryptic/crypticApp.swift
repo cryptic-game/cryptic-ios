@@ -14,7 +14,7 @@ struct crypticApp: App {
         //let = ContentViewModel(socket: socket)
         WindowGroup {
            //ContentView().environmentObject(settings)
-            DesktopView2()
+            DesktopView()
             //DashboardView()
             //LoginView(socket: socket)
         }

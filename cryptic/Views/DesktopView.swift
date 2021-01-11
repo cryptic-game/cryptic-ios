@@ -1,40 +1,27 @@
 //
-//  DesktopView.swift
+//  DesktopView2.swift
 //  cryptic
 //
-//  Created by Nils Grob on 10.01.21.
+//  Created by Nils Grob on 11.01.21.
 //
 
 import SwiftUI
 
 struct DesktopView: View {
-    let screenWidth = UIScreen.main.bounds.width
-    let screenHeight = UIScreen.main.bounds.height
     var body: some View {
-        ZStack{
-            Color("BackgroundColor").ignoresSafeArea()
-            VStack(){
-                HStack(spacing: 15){
-                    ZStack{
-                        Rectangle().frame(width: 100   , height: 100).cornerRadius(25).shadow(color: .gray, radius: 3).foregroundColor(Color("ForegroundColor"))
-                        Image("Miner").resizable().frame(width: 80, height: 80)
-                        }
-                    ZStack{
-                        Rectangle().frame(width: 100, height: 100).cornerRadius(25).shadow(color: .gray, radius: 3).foregroundColor(Color( "ForegroundColor"))
-                        Image("Terminal").resizable().frame(width: 80, height: 80)
-                    }
-                    ZStack{
-                        Rectangle().frame(width: 100, height: 100).cornerRadius(25).shadow(color: .gray, radius: 3).foregroundColor(Color( "ForegroundColor"))
-                        Image("Wallet").resizable().frame(width: 80, height: 80)
-                    }
+        TabView{
+            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "terminal") }
+            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "externaldrive.connected.to.line.below") }
+            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "folder") }
+            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "bitcoinsign.circle") }
+            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "folder") }
+            TerminalView(output: [TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "ls", output: "..\n.")]).tabItem { Image(systemName: "folder") }
 
-                }
-            }
         }
     }
 }
 
-struct DesktopView_Previews: PreviewProvider {
+struct DesktopView2_Previews: PreviewProvider {
     static var previews: some View {
         DesktopView()
     }

@@ -18,9 +18,9 @@
 		E02BE1A025A8A6BC006358EC /* RespondsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02BE19F25A8A6BC006358EC /* RespondsHandler.swift */; };
 		E02BE1A325A8AA8D006358EC /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02BE1A225A8AA8D006358EC /* ViewModel.swift */; };
 		E02BE1AA25A8AB2B006358EC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02BE1A925A8AB2B006358EC /* Model.swift */; };
-		E0528FAE25AB856C006E7018 /* DesktopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FAD25AB856C006E7018 /* DesktopView.swift */; };
-		E0528FB125ACAC3A006E7018 /* DesktopView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FB025ACAC3A006E7018 /* DesktopView2.swift */; };
+		E0528FB125ACAC3A006E7018 /* DesktopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FB025ACAC3A006E7018 /* DesktopView.swift */; };
 		E0528FB425ACB104006E7018 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FB325ACB104006E7018 /* TerminalView.swift */; };
+		E0528FDB25ACDEAD006E7018 /* TerminalOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0528FDA25ACDEAD006E7018 /* TerminalOutput.swift */; };
 		E080515225A7A8B500741150 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = E080515125A7A8B500741150 /* Starscream */; };
 		E080515525A7AB8000741150 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E080515425A7AB8000741150 /* LoginViewModel.swift */; };
 		E08380A325A8F87D003562F2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08380A225A8F87D003562F2 /* SettingsView.swift */; };
@@ -54,9 +54,9 @@
 		E02BE19F25A8A6BC006358EC /* RespondsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RespondsHandler.swift; sourceTree = "<group>"; };
 		E02BE1A225A8AA8D006358EC /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		E02BE1A925A8AB2B006358EC /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
-		E0528FAD25AB856C006E7018 /* DesktopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopView.swift; sourceTree = "<group>"; };
-		E0528FB025ACAC3A006E7018 /* DesktopView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopView2.swift; sourceTree = "<group>"; };
+		E0528FB025ACAC3A006E7018 /* DesktopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopView.swift; sourceTree = "<group>"; };
 		E0528FB325ACB104006E7018 /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
+		E0528FDA25ACDEAD006E7018 /* TerminalOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TerminalOutput.swift; path = Views/TerminalOutput.swift; sourceTree = "<group>"; };
 		E080515425A7AB8000741150 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		E08380A225A8F87D003562F2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E08380A525A8FF65003562F2 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -106,6 +106,7 @@
 		E00D9ACF25A5EF8500899259 /* cryptic */ = {
 			isa = PBXGroup;
 			children = (
+				E0528FDA25ACDEAD006E7018 /* TerminalOutput.swift */,
 				E0B42E6B25A7580400EACF92 /* Credentials.swift */,
 				E0A92F5025A9FC3B00277517 /* Response.swift */,
 				E0A92F5325A9FC6500277517 /* Request.swift */,
@@ -139,8 +140,7 @@
 				E08380A225A8F87D003562F2 /* SettingsView.swift */,
 				E00D9AF025A6160700899259 /* DashboardView.swift */,
 				E0A92F6225AA131500277517 /* DeviceView.swift */,
-				E0528FAD25AB856C006E7018 /* DesktopView.swift */,
-				E0528FB025ACAC3A006E7018 /* DesktopView2.swift */,
+				E0528FB025ACAC3A006E7018 /* DesktopView.swift */,
 				E0528FB325ACB104006E7018 /* TerminalView.swift */,
 				E0B42E6525A735F500EACF92 /* DeviceRunningProcessesView.swift */,
 				E0B42E6225A7342400EACF92 /* DeviceSpecificFactorsView.swift */,
@@ -257,11 +257,11 @@
 				E0A92F5125A9FC3B00277517 /* Response.swift in Sources */,
 				E08380A325A8F87D003562F2 /* SettingsView.swift in Sources */,
 				E0A92F6325AA131500277517 /* DeviceView.swift in Sources */,
-				E0528FB125ACAC3A006E7018 /* DesktopView2.swift in Sources */,
+				E0528FB125ACAC3A006E7018 /* DesktopView.swift in Sources */,
 				E0B42E6025A720E500EACF92 /* DeviceSpecificationView.swift in Sources */,
 				E02BE1AA25A8AB2B006358EC /* Model.swift in Sources */,
 				E0B42E6625A735F500EACF92 /* DeviceRunningProcessesView.swift in Sources */,
-				E0528FAE25AB856C006E7018 /* DesktopView.swift in Sources */,
+				E0528FDB25ACDEAD006E7018 /* TerminalOutput.swift in Sources */,
 				E0B334D825A8C3DE00DF574F /* ContentViewModel.swift in Sources */,
 				E00D9AF125A6160700899259 /* DashboardView.swift in Sources */,
 				E0A92F5725A9FFFE00277517 /* Device.swift in Sources */,
