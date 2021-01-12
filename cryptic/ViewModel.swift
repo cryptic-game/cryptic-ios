@@ -19,9 +19,10 @@ class ViewModel{
         }
     }
     @Published var alertWrapper: AlertWrapper?
-    
+    @Published var online:Int
     init(model:Model) {
         self.model = model
+        self.online = 0
     }
     
     func showAlert(error:String) -> () {

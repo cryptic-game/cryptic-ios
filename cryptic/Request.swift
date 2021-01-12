@@ -16,6 +16,7 @@ struct MSRequest:Codable{
 
 struct MSData:Codable{
     let device_uuid:String?
+    let name:String?
 }
 
 struct DeviceRequest:Codable{

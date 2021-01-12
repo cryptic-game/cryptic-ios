@@ -62,13 +62,17 @@ struct ResponseHandler {
             }
            
         }
+        if(response.name != nil){
+            defaults.set(response.name!, forKey: "username")
+            defaults.set(response.uuid!.uuidString.lowercased(), forKey: "userUUID")
+        }
         
         if(response.online != nil){
             print("hello")
             //let vm = self.viewModel as! TerminalViewModel
             DispatchQueue.main.async {
                 print("hello inside")
-                (self.viewModel as! TerminalViewModel).online = response.online!
+                self.viewModel.online = response.online!
                 //vm.online = response.online!
             }
             //print("\(vm.online)")

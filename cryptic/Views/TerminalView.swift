@@ -56,7 +56,7 @@ struct TerminalView: View {
                 Spacer()
                 HStack(spacing: 0){
                     Spacer().frame(width: 20)
-                    Text("homo-iocus@Kore").foregroundColor(.green).font(.footnote)
+                    Text("\(viewModel.user)@\(viewModel.device)").foregroundColor(.green).font(.footnote)
                     Text(":").foregroundColor(.white).font(.footnote)
                     Text("/").foregroundColor(.blue).font(.footnote)
                     Text("$").foregroundColor(.green).font(.footnote)
@@ -64,6 +64,8 @@ struct TerminalView: View {
                         if(editingChanged){
                             print("started writing")
                         }else{
+                            let regexHost = try! NSRegularExpression(pattern: "hostname [a-zA-Z]{1,14}")
+                            let range = NSRange(location: 0, length: input.utf16.count)
                             if(input == "help"){
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "help", output: "help\t\t\tlist of all commands\nstatus\t\tdisplays the number of online players\nhostname\tchanges the name of the device\ncd\t\t\tchanges the working directory\nlst\t\t\tshows files of the current working directory\nl\t\t\tshows files of the current working directory\ndir\t\t\tshows files of the current working directory\ntouch\t\tcreate a file\ncat\t\t\treads out a file\nrm\t\t\tdeletes a file or a directory\ncp\t\t\tcopys a file\nmv\t\t\tmoves a file\nrename\t\trenames a file\nmkdir\t\tcreates a direcotry\nexit\t\t\tcloses the terminal or leaves another device\nquit\t\t\tcloses the terminal or leaves another device\nclear\t\tclears the terminal\nhistory\t\tshows the command history of the session\nmorphcoin\tshows wallet\npay\t\t\tsends money to another wallet\nservice\t\tcreates or uses services\nspot\t\t\tspots other devices\nconnect\t\tconnects to other device\nnetwork\t\ttype `network` for further information\ninfo\t\t\tshows info of the current device"))
                                 input = ""
@@ -78,6 +80,23 @@ struct TerminalView: View {
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "status", output:"Online players: \(viewModel.online)"))
                                 input = ""
                                 
+                            }else if (input.contains("hostname") && input.count < 24){
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: input, output:"The hostname couldn't be changed"))
+                                input = ""
+
+                            }else if (regexHost.firstMatch(in: input, options: [], range: range) != nil) {
+                                let lineItems = input.split(separator: " ", maxSplits: 1)
+                                viewModel.changeHost(new: String(lineItems[1]))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: input, output:""))
+                                input = ""
+                                
+                            }else if(input == "hostname"){
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: input, output: viewModel.device))
+                                input = ""
+                            }else if (input.contains("hostname")){
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: input, output:"The hostname couldn't be changed"))
+                                input = ""
+
                             }else{
                                 
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "\(input)", output: "Command could not be found.\nType `help` for a list of commands."))

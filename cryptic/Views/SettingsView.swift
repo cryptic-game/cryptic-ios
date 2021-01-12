@@ -28,7 +28,7 @@ struct SettingsView: View {
                 Spacer().frame(width: 20)
                 Text("Name:").foregroundColor(.white)
                 Spacer().frame(width: 20)
-                Text("homo-iocus").foregroundColor(.white)
+                Text("\(settings.user)").foregroundColor(.white)
                 Spacer()
             }
             Spacer().frame(height: 20)
@@ -36,7 +36,7 @@ struct SettingsView: View {
                 Spacer().frame(width: 20)
                 Text("UUID:").foregroundColor(.white)
                 Spacer().frame(width: 20)
-                Text("c81d1957-5234-407d-a1a4-55ad20a41723").foregroundColor(.white)
+                Text("\(settings.userUUID)").foregroundColor(.white)
                 Spacer()
                    
             }

@@ -14,6 +14,8 @@ struct Response:Codable{
     let online:Int?
     let error:String?
     let status:String?
+    let name:String?
+    let uuid:UUID?
     
     
     
