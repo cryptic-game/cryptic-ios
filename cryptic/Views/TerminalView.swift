@@ -80,7 +80,7 @@ struct TerminalView: View {
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "status", output:"Online players: \(viewModel.online)"))
                                 input = ""
                                 
-                            }else if (input.contains("hostname") && input.count < 24){
+                            }else if (input.contains("hostname") && input.count > 24){
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: input, output:"The hostname couldn't be changed"))
                                 input = ""
 
