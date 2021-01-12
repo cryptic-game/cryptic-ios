@@ -15,11 +15,11 @@ struct DesktopView: View {
     var body: some View {
         TabView{
             TerminalView(socket:socket).tabItem { Image(systemName: "terminal") }
-            TerminalView(socket:socket).tabItem { Image(systemName: "externaldrive.connected.to.line.below") }
-            TerminalView(socket:socket).tabItem { Image(systemName: "folder") }
-            TerminalView(socket:socket).tabItem { Image(systemName: "bitcoinsign.circle") }
-            TerminalView(socket:socket).tabItem { Image(systemName: "folder") }
-            TerminalView(socket:socket).tabItem { Image(systemName: "folder") }
+            DeviceRunningProcessesView().tabItem { Image(systemName: "externaldrive.connected.to.line.below") }
+            DeviceRunningProcessesView().tabItem { Image(systemName: "folder") }
+            DeviceRunningProcessesView().tabItem { Image(systemName: "bitcoinsign.circle") }
+            DeviceRunningProcessesView().tabItem { Image(systemName: "folder") }
+            DeviceRunningProcessesView().tabItem { Image(systemName: "folder") }
 
         }
     }

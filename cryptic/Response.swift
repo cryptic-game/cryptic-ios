@@ -21,7 +21,11 @@ struct Response:Codable{
 
 struct ResponseData:Codable{
     let devices:[DeviceModel]?
-    let device:DeviceModel?
+    let uuid:UUID?
+    let name:String?
+    let owner:UUID?
+    let powered_on:Bool?
+    let starter_device:Bool?
+    let hardware:[Hardware]?
+
 }
-
-

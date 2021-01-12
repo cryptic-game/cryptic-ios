@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct DeviceSpecificationView: View {
+    @ObservedObject var viewModel:DashboardViewModel
+    
+    init(viewModel:DashboardViewModel) {
+        self.viewModel = viewModel
+    }
     var body: some View {
             VStack{
                 HStack{
@@ -28,10 +33,10 @@ struct DeviceSpecificationView: View {
                     Spacer().frame(width: 20)
                     VStack(alignment: .leading){
                         Spacer().frame(height: 15)
-                        Text("Kore").foregroundColor(.white)
-                        Text("Core One A100").foregroundColor(.white)
+                        Text(viewModel.device?.name ?? "").foregroundColor(.white)
+                        Text(viewModel.device?.hardware?[2].hardware_element ?? "").foregroundColor(.white)
                         Text("128 MB").foregroundColor(.white)
-                        Text("d3cdea32-f2f5-4e26-8314-9da40a90938a").font(.system(size: 15)).foregroundColor(.white)
+                        Text(viewModel.device?.uuid.uuidString.lowercased() ?? "").font(.system(size: 15)).foregroundColor(.white)
                     }
                     Spacer()
                 }
@@ -45,6 +50,6 @@ struct DeviceSpecificationView: View {
 
 struct DeviceSpecificationView_Previews: PreviewProvider {
     static var previews: some View {
-        DeviceSpecificationView()
+        DeviceSpecificationView(viewModel: DashboardViewModel(socket: Socket()))
     }
 }

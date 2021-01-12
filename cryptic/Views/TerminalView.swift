@@ -24,25 +24,33 @@ struct TerminalView: View {
         
             VStack{
                 ScrollView{
-                    ForEach(output){ output in
-                        VStack{
-                            HStack(spacing: 0){
-                                Spacer().frame(width: 20)
-                                Text("\(output.username)@\(output.deviceName)").foregroundColor(.green).font(.footnote)
-                                Text(":").foregroundColor(.white).font(.footnote)
-                                Text("\(output.path)").foregroundColor(.blue).font(.footnote)
-                                Text("$").foregroundColor(.green).font(.footnote)
-                                Text("\(output.command)").foregroundColor(.white).font(.footnote)
-                                Spacer()
+                    ScrollViewReader{ value in
+                        ForEach(viewModel.output){ output in
+                            VStack{
+                                HStack(spacing: 0){
+                                    Spacer().frame(width: 20)
+                                    Text("\(output.username)@\(output.deviceName)").foregroundColor(.green).font(.footnote)
+                                    Text(":").foregroundColor(.white).font(.footnote)
+                                    Text("\(output.path)").foregroundColor(.blue).font(.footnote)
+                                    Text("$").foregroundColor(.green).font(.footnote)
+                                    Text("\(output.command)").foregroundColor(.white).font(.footnote)
+                                    Spacer()
+                                }
+                                HStack(spacing: 0){
+                                    Spacer().frame(width: 20)
+                                    Text("\(output.output)").foregroundColor(.white).font(.footnote)
+                                    Spacer()
+                                }
+                               
                             }
-                            HStack(spacing: 0){
-                                Spacer().frame(width: 20)
-                                Text("\(output.output)").foregroundColor(.white).font(.footnote)
-                                Spacer()
+                        }.onChange(of: viewModel.output.count) { _ in
+                            if(viewModel.output.count != 0){
+                                value.scrollTo(viewModel.output[viewModel.output.count - 1].id)
                             }
-                           
+                            
                         }
                     }
+                    
                 }
              
                 Spacer()
@@ -54,24 +62,30 @@ struct TerminalView: View {
                     Text("$").foregroundColor(.green).font(.footnote)
                     TextField("", text: $input, onEditingChanged:{editingChanged in
                         if(editingChanged){
-                            print("started")
-
+                            print("started writing")
                         }else{
                             if(input == "help"){
-                                output.append(TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "help", output: "help    list of all commands\nstatus    displays the number of online players\nhostname    changes the name of the device\ncd    changes the working directory\nls    shows files of the current working directory\nl    shows files of the current working directory\ndir    shows files of the current working directory\ntouch    create a file\ncat    reads out a file\nrm    deletes a file or a directory\ncp    copys a file\nmv    moves a file\nrename    renames a file\nmkdir    creates a direcotry\nexit    closes the terminal or leaves another device\nquit    closes the terminal or leaves another device\nclear    clears the terminal\nhistory    shows the command history of the current terminal session\nmorphcoin    shows wallet\npay    sends money to another wallet\nservice    creates or uses services\nspot    spots other devices\nconnect    connects to other device\nnetwork    type `network` for further information\ninfo    shows info of the current device"))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "help", output: "help\t\t\tlist of all commands\nstatus\t\tdisplays the number of online players\nhostname\tchanges the name of the device\ncd\t\t\tchanges the working directory\nlst\t\t\tshows files of the current working directory\nl\t\t\tshows files of the current working directory\ndir\t\t\tshows files of the current working directory\ntouch\t\tcreate a file\ncat\t\t\treads out a file\nrm\t\t\tdeletes a file or a directory\ncp\t\t\tcopys a file\nmv\t\t\tmoves a file\nrename\t\trenames a file\nmkdir\t\tcreates a direcotry\nexit\t\t\tcloses the terminal or leaves another device\nquit\t\t\tcloses the terminal or leaves another device\nclear\t\tclears the terminal\nhistory\t\tshows the command history of the session\nmorphcoin\tshows wallet\npay\t\t\tsends money to another wallet\nservice\t\tcreates or uses services\nspot\t\t\tspots other devices\nconnect\t\tconnects to other device\nnetwork\t\ttype `network` for further information\ninfo\t\t\tshows info of the current device"))
                                 input = ""
                             }else if (input == "clear") {
-                                output = []
+                                viewModel.output = []
                                 input = ""
+                            }else if (input == "service") {
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "service", output:"usage: service create | list | bruteforce | portscan"))
+                                input = ""
+                                
+                            }else if (input == "status") {
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "status", output:"Online players: \(viewModel.online)"))
+                                input = ""
+                                
                             }else{
-                                output.append(TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "\(input)", output: "Command could not be found.\nType `help` for a list of commands."))
+                                
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: "homo-iocus", deviceName: "Kore", path: "/", command: "\(input)", output: "Command could not be found.\nType `help` for a list of commands."))
                                 input = ""
                             }
-                            
-                            print("finished")
                         }
                         
-                    }).foregroundColor(.white).autocapitalization(.none)
+                    }).foregroundColor(.white).autocapitalization(.none)//.background(Color("ForegroundColor")).cornerRadius(10)
                 }
                 Spacer().frame(height: 20)
             }

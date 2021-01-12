@@ -36,7 +36,7 @@ class Socket:WebSocketDelegate {
             let jsonData = text.data(using: .utf8)!
             let data = try decoder.decode(Response.self, from: jsonData)
             ResponseHandler(viewModel: viewModel!, content: content!, msHandlers: msHandlers).responseHandler(response: data)
-            
+            print(text)
             
         } catch let error {
             print("\(error)")

@@ -29,7 +29,8 @@ struct DeviceView: View {
                     Spacer()
                     VStack{
                         Image("ComputerOnline").onTapGesture {
-                            DispatchQueue.main.async {                            content.showDesktop = true
+                            DispatchQueue.main.async {
+                                content.showDesktop = true
                             }
                         }
                         Text(viewModel.device?.name ?? "").foregroundColor(.white).bold().font(.title)
@@ -43,7 +44,7 @@ struct DeviceView: View {
                 }
                 
                 TabView{
-                    DeviceSpecificationView()
+                    DeviceSpecificationView(viewModel: self.viewModel)
                     DeviceSpecificFactorsView()
                     DeviceRunningProcessesView()
                 }.tabViewStyle(PageTabViewStyle())

@@ -43,6 +43,17 @@ class Model{
             
         }
     }
+    
+    func getStatus(){
+        do {
+            let data = try encoder.encode(Logout(action: "info"))
+            print(String(data: data, encoding: .utf8)!)
+            socket.connection.write(string: String(data: data, encoding: .utf8)!)
+        }catch let error {
+            print("Error serializing JSON:\n\(error)")
+            
+        }
+    }
     func receive(data:ResponseData){
         print("\(data)")
     }

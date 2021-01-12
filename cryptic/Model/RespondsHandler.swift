@@ -62,6 +62,17 @@ struct ResponseHandler {
             }
            
         }
+        
+        if(response.online != nil){
+            print("hello")
+            //let vm = self.viewModel as! TerminalViewModel
+            DispatchQueue.main.async {
+                print("hello inside")
+                (self.viewModel as! TerminalViewModel).online = response.online!
+                //vm.online = response.online!
+            }
+            //print("\(vm.online)")
+        }
         print("To do handle this data: \(response)")
     }
         
