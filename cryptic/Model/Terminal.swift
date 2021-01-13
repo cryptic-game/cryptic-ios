@@ -13,10 +13,12 @@ class Terminal:Model{
     var viewModel:TerminalViewModel?
     var listServices:Bool
     var spotedDevice:String?
+    var spotedDeviceName:String?
     
     override init(socket:Socket) {
         self.viewModel = nil
         self.spotedDevice = nil
+        self.spotedDeviceName = nil
         self.listServices = false
         super.init(socket: socket)
         
@@ -24,31 +26,35 @@ class Terminal:Model{
     override func receive(data: ResponseData) {
         if(data.uuid != nil){
             if(data.uuid?.uuidString.lowercased() == defaults.string(forKey: "currentDevice")){
-                return 
+                return
             }
             if(data.running != nil){
-                return 
+                return
             }else{
                 self.spotedDevice = data.uuid!.uuidString.lowercased()
+                self.spotedDeviceName = data.name!
                 self.listAllServices(deviceUUID: defaults.string(forKey: "currentDevice")!)
-                DispatchQueue.main.async {
-                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:"'\(data.name!)'\n\t• UUID: \(data.uuid!.uuidString.lowercased())"))
-                }
+                
+//                DispatchQueue.main.async {
+//                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:"'\(data.name!)'\n\t• UUID: \(data.uuid!.uuidString.lowercased())"))
+//                }
             }
-            
+
         }else if(data.services != nil){
-            
+
             if(data.services![0].device.uuidString.lowercased() == defaults.string(forKey: "currentDevice")){
+                var rows:[Row] = []
                 if(listServices){
-                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "service list", output:"'\(viewModel!.device)' (" + defaults.string(forKey: "currentDevice")! + "):"))
+                    rows.append(Row(id: UUID(), contentBeforeUUID: "'\(viewModel!.device)' (", uuid: defaults.string(forKey: "currentDevice")!, contentAfterUUID: "):"))
                     for service in data.services!{
                         if(service.running!){
-                            self.viewModel!.output[viewModel!.output.count - 1].output.append("\n\t • \(service.name) (Running UUID: \(service.uuid.uuidString.lowercased()) Port: \(service.running_port!)")
+                            rows.append(Row(id: UUID(), contentBeforeUUID: "\t • \(service.name) (Running,UUID:", uuid: "\(service.uuid.uuidString.lowercased())", contentAfterUUID: "Port: \(service.running_port!))"))
                         }else{
-                            self.viewModel!.output[viewModel!.output.count - 1].output.append("\n\t • \(service.name) (Offline UUID: \(service.uuid.uuidString.lowercased()))")
+                            rows.append(Row(id: UUID(), contentBeforeUUID: "\t • \(service.name) (Offline,UUID:", uuid: "\(service.uuid.uuidString.lowercased())", contentAfterUUID: ")"))
                         }
-                        listServices = false
                     }
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "service list", output:rows))
+                    listServices = false
                 }else{
                     var portscanOn:Bool = false
                     var portscan:String = ""
@@ -59,35 +65,39 @@ class Terminal:Model{
                         }
                     }
                     if(!portscanOn){
-                        self.viewModel!.output[viewModel!.output.count - 1].output.append("\n\t portscan failed")
+                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t portscan failed", uuid: "", contentAfterUUID: ""))
+                        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:rows))
                     }else{
                         self.use(targetDevice: spotedDevice!, serviceUUID: portscan)
                     }
                 }
-                
-            }else {
-                self.viewModel!.output[viewModel!.output.count - 1].output.append("\n • Services:")
+
+                }else {
+                var rows:[Row] = []
+                    rows.append(Row(id: UUID(), contentBeforeUUID: "'\(spotedDeviceName!)'", uuid: "", contentAfterUUID: ""))
+                    rows.append(Row(id: UUID(), contentBeforeUUID: "• UUID:", uuid: "\(spotedDevice!)", contentAfterUUID: ""))
+                    rows.append(Row(id: UUID(), contentBeforeUUID: "• Services:", uuid: "", contentAfterUUID: ""))
                 for service in data.services!{
                     if service.name == "ssh"{
-                        self.viewModel!.output[viewModel!.output.count - 1].output.append("\n\t◦ ssh(\(service.uuid))")
+                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t◦ ssh", uuid: "\(service.uuid)", contentAfterUUID: ")"))
                     }else if service.name == "telnet"{
-                        self.viewModel!.output[viewModel!.output.count - 1].output.append("\n\t◦ telnet(\(service.uuid))")
+                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t◦ telnet", uuid: "\(service.uuid)", contentAfterUUID: ")"))
                     }
                 }
-                
+                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:rows))
             }
-        
-            
+
+
         }else if(data.error != nil){
             if(data.error! == "already_own_this_service"){
-                self.viewModel!.output[viewModel!.output.count - 1].output.append("Service has already been created")
+                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Service has already been created", uuid: "", contentAfterUUID: "")]))
             }
         }else{
-            DispatchQueue.main.async {
-                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: self.viewModel!.input, output:"An error occured"))
-            }
+            self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "An error occured", uuid: "", contentAfterUUID: "")]))
         }
     }
+            
+       
     func spot()  {
         do {
             let uuid = UUID()

@@ -34,7 +34,7 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func list() {
         (model as! Terminal).listServices = true
         (model as! Terminal).listAllServices(deviceUUID: UserDefaults.standard.string(forKey: "currentDevice")!)
-        
+
     }
     init(socket:Socket) {
         super.init(model: Terminal(socket: socket))

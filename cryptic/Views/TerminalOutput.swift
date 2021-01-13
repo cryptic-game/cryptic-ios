@@ -13,6 +13,14 @@ struct TerminalOutput:Identifiable{
     let deviceName:String
     let path:String
     let command:String
-    var output:String
+    var output:[Row]
     
+    
+}
+
+struct Row:Identifiable{
+    let id:UUID
+    let contentBeforeUUID:String
+    let uuid:String
+    let contentAfterUUID:String
 }

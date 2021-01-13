@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TerminalView: View {
     @ObservedObject var viewModel:TerminalViewModel
-    @State var output:[TerminalOutput] = []
+    //@State var output:[TerminalOutput] = []
     let socket:Socket
     
     init(socket:Socket) {
@@ -17,8 +17,8 @@ struct TerminalView: View {
         self.viewModel = TerminalViewModel(socket: socket)
         let formatter = DateFormatter()
         formatter.dateFormat = "eeeeee, dd.MM.yyyy"
-        self.viewModel.output.append((TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "", output:"Last login: \(formatter.string(from:(Date(milliseconds: Int64(viewModel.lastLogin)))))"))
-)
+        self.viewModel.output.append((TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "", output:[Row(id: UUID(), contentBeforeUUID: "Last login: \(formatter.string(from:(Date(milliseconds: Int64(viewModel.lastLogin)))))", uuid: "", contentAfterUUID: "")])))
+      
     }
     var body: some View {
         ZStack{
@@ -39,15 +39,22 @@ struct TerminalView: View {
                                     Text("\(output.command)").foregroundColor(.white).font(.footnote)
                                     Spacer()
                                 }
-                                HStack(spacing: 0){
-                                    Spacer().frame(width: 20)
-                                    Text("\(output.output)").foregroundColor(.white).font(.footnote).onTapGesture {
-                                        if(output.output.contains("UUID")){
-                                            print("TO do copy UUID in input field")
+                                //HStack(spacing: 0){
+                                  //  Spacer().frame(width: 20)
+                                 
+                                    ForEach(output.output){ row in
+                                        HStack{
+                                            Spacer().frame(width: 20)
+                                            Text("\(row.contentBeforeUUID)").foregroundColor(.white).font(.footnote)
+                                            Text("\(row.uuid)").underline().onTapGesture{viewModel.input = viewModel.input + " " + row.uuid}.foregroundColor(.white).font(Font.system(size: 5))
+                                            Text("\(row.contentAfterUUID)").foregroundColor(.white).font(.footnote)
+                                            Spacer()
                                         }
-                                    }
+                                            }
+                                        //}
+                                    
                                     Spacer()
-                                }
+                                
                                
                             }
                         }.onChange(of: viewModel.output.count) { _ in
@@ -76,67 +83,67 @@ struct TerminalView: View {
                             let regexHost = try! NSRegularExpression(pattern: "hostname [a-zA-Z]{1,14}")
                             let range = NSRange(location: 0, length: viewModel.input.utf16.count)
                             if(viewModel.input == "help"){
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "help", output: "help\t\t\tlist of all commands\nstatus\t\tdisplays the number of online players\nhostname\tchanges the name of the device\ncd\t\t\tchanges the working directory\nlst\t\t\tshows files of the current working directory\nl\t\t\tshows files of the current working directory\ndir\t\t\tshows files of the current working directory\ntouch\t\tcreate a file\ncat\t\t\treads out a file\nrm\t\t\tdeletes a file or a directory\ncp\t\t\tcopys a file\nmv\t\t\tmoves a file\nrename\t\trenames a file\nmkdir\t\tcreates a direcotry\nexit\t\t\tcloses the terminal or leaves another device\nquit\t\t\tcloses the terminal or leaves another device\nclear\t\tclears the terminal\nhistory\t\tshows the command history of the session\nmorphcoin\tshows wallet\npay\t\t\tsends money to another wallet\nservice\t\tcreates or uses services\nspot\t\t\tspots other devices\nconnect\t\tconnects to other device\nnetwork\t\ttype `network` for further information\ninfo\t\t\tshows info of the current device"))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "help", output: [Row(id: UUID(), contentBeforeUUID: "help\t\t\tlist of all commands", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "status\t\tdisplays the number of online players", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "hostname\tchanges the name of the device", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "cd\t\t\tchanges the working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "ls\t\t\tshows files of the current working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "l\t\t\tshows files of the current working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "dir\t\t\tshows files of the current working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "touch\t\tcreate a file", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "cat\t\t\treads out a file", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "rm\t\t\tdeletes a file or a directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "cp\t\t\tcopys a file", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "mv\t\t\tmoves a file", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "rename\t\trenames a file", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "mkdir\t\tcreates a direcotry", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "exit\t\t\tcloses the terminal or leaves another device", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "quit\t\t\tcloses the terminal or leaves another device", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "clear\t\tclears the terminal", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "history\t\tshows the command history of the session", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "morphcoin\tshows wallet", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "pay\t\t\tsends money to another wallet", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "service\t\tcreates or uses services", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "spot\t\t\tspots other devices", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "connect\t\tconnects to other device", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "network\t\ttype `network` for further information", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "info\t\t\tshows info of the current device", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
                             }else if (viewModel.input == "clear") {
                                 if(viewModel.output.count-1 == 0){
-                                    viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "clear.", output:"There's nothing to clear"))
+                                    viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "clear.", output:[Row(id: UUID(), contentBeforeUUID: "There's nothing to clear", uuid: "", contentAfterUUID: "")]))
                                     viewModel.input = ""
                                 }else{
                                     viewModel.output.removeSubrange(1...viewModel.output.count-1)
                                     viewModel.input = ""
                                 }
                             }else if (viewModel.input == "service") {
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "service", output:"usage: service create | list | bruteforce | portscan"))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "service", output:[Row(id: UUID(), contentBeforeUUID: "usage: service create | list | bruteforce | portscan", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input == "service list") {
                                 viewModel.list()
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input == "service create portscan") {
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:""))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
                                 viewModel.create(name: "portscan")
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input == "service create telnet") {
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:""))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
                                 viewModel.create(name: "telnet")
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input == "service create bruteforce") {
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:""))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
                                 viewModel.create(name: "bruteforce")
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input == "service create ssh") {
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:""))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
                                 viewModel.create(name: "ssh")
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input == "service create") {
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:"usage: service create\n <bruteforce|portscan|telnet|ssh>"))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input , output:[Row(id: UUID(), contentBeforeUUID: "usage: service create\n <bruteforce|portscan|telnet|ssh>", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input == "status") {
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "status", output:"Online players: \(viewModel.online)"))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "status", output:[Row(id: UUID(), contentBeforeUUID: "Online players: \(viewModel.online)", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
-                                
+
                             }else if (viewModel.input.contains("hostname") && viewModel.input.count > 24){
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:"The hostname couldn't be changed"))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: "The hostname couldn't be changed", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
 
                             }else if (regexHost.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
                                 let lineItems = viewModel.input.split(separator: " ", maxSplits: 1)
                                 viewModel.changeHost(new: String(lineItems[1]))
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:""))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
-                                
+
                             }else if(viewModel.input == "hostname"){
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output: viewModel.device))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: viewModel.device, uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
                             }else if (viewModel.input.contains("hostname")){
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:"The hostname couldn't be changed"))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: "The hostname couldn't be changed", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
 
                             }else if (viewModel.input == "spot"){
@@ -144,8 +151,8 @@ struct TerminalView: View {
                                 viewModel.input = ""
 
                             }else{
-                                
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "\(viewModel.input)", output: "Command could not be found.\nType `help` for a list of commands."))
+
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "\(viewModel.input)", output: [Row(id: UUID(), contentBeforeUUID: "Command could not be found.\nType `help` for a list of commands.", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
                             }
                         }
