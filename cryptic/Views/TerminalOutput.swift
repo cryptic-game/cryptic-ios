@@ -13,6 +13,6 @@ struct TerminalOutput:Identifiable{
     let deviceName:String
     let path:String
     let command:String
-    let output:String
+    var output:String
     
 }

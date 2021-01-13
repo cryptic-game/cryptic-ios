@@ -16,6 +16,7 @@ struct Response:Codable{
     let status:String?
     let name:String?
     let uuid:UUID?
+    let last:Double?
     
     
     
@@ -23,11 +24,25 @@ struct Response:Codable{
 
 struct ResponseData:Codable{
     let devices:[DeviceModel]?
+    let services:[ServiceModel]?
     let uuid:UUID?
     let name:String?
     let owner:UUID?
     let powered_on:Bool?
     let starter_device:Bool?
     let hardware:[Hardware]?
+    let running:Bool?
+    let error:String?
 
+}
+
+struct ServiceModel:Codable{
+    let running:Bool?
+    let owner:UUID?
+    let running_port:Int?
+    let name:String
+    let uuid:UUID
+    let device:UUID
+    let speed:Double?
+    let part_owner:UUID?
 }

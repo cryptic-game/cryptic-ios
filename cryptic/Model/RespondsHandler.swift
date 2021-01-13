@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ResponseHandler {
+class ResponseHandler {
     var defaults = UserDefaults.standard
     var viewModel:ViewModel
     var content:ContentViewModel
@@ -55,9 +55,10 @@ struct ResponseHandler {
             }
         }
         if(response.tag != nil){
-            for handler in MSHandlers {
-                if(handler.tag == UUID(uuidString: response.tag!)){
-                    handler.receive(response: response.data!)
+            for i in 0..<MSHandlers.count {
+                if(MSHandlers[i].tag == UUID(uuidString: response.tag!)){
+                    MSHandlers[i].receive(response: response.data!)
+                    MSHandlers.remove(at: i)
                 }
             }
            
@@ -69,6 +70,7 @@ struct ResponseHandler {
         
         if(response.online != nil){
             print("hello")
+            defaults.set(response.last!, forKey: "lastLogin")
             //let vm = self.viewModel as! TerminalViewModel
             DispatchQueue.main.async {
                 print("hello inside")

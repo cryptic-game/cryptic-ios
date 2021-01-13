@@ -46,7 +46,7 @@ class Device:Model{
     func getAll() -> (){
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "all"], data:MSData(device_uuid: nil, name: nil)))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "all"], data:MSData(device_uuid: nil, name: nil, service_uuid: nil, target_device: nil)))
             print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
@@ -62,7 +62,7 @@ class Device:Model{
         do {
             let uuid = UUID()
             //let data = try encoder.encode(DeviceRequest(device_uuid: device_uuid))
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "info"], data:MSData(device_uuid: device_uuid.uuidString.lowercased(), name: nil)))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "info"], data:MSData(device_uuid: device_uuid.uuidString.lowercased(), name: nil, service_uuid: nil, target_device: nil)))
             print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
