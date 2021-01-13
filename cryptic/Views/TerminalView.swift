@@ -79,8 +79,13 @@ struct TerminalView: View {
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "help", output: "help\t\t\tlist of all commands\nstatus\t\tdisplays the number of online players\nhostname\tchanges the name of the device\ncd\t\t\tchanges the working directory\nlst\t\t\tshows files of the current working directory\nl\t\t\tshows files of the current working directory\ndir\t\t\tshows files of the current working directory\ntouch\t\tcreate a file\ncat\t\t\treads out a file\nrm\t\t\tdeletes a file or a directory\ncp\t\t\tcopys a file\nmv\t\t\tmoves a file\nrename\t\trenames a file\nmkdir\t\tcreates a direcotry\nexit\t\t\tcloses the terminal or leaves another device\nquit\t\t\tcloses the terminal or leaves another device\nclear\t\tclears the terminal\nhistory\t\tshows the command history of the session\nmorphcoin\tshows wallet\npay\t\t\tsends money to another wallet\nservice\t\tcreates or uses services\nspot\t\t\tspots other devices\nconnect\t\tconnects to other device\nnetwork\t\ttype `network` for further information\ninfo\t\t\tshows info of the current device"))
                                 viewModel.input = ""
                             }else if (viewModel.input == "clear") {
-                                viewModel.output = []
-                                viewModel.input = ""
+                                if(viewModel.output.count-1 == 0){
+                                    viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "clear.", output:"There's nothing to clear"))
+                                    viewModel.input = ""
+                                }else{
+                                    viewModel.output.removeSubrange(1...viewModel.output.count-1)
+                                    viewModel.input = ""
+                                }
                             }else if (viewModel.input == "service") {
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "service", output:"usage: service create | list | bruteforce | portscan"))
                                 viewModel.input = ""

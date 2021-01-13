@@ -23,6 +23,9 @@ class Terminal:Model{
     }
     override func receive(data: ResponseData) {
         if(data.uuid != nil){
+            if(data.uuid?.uuidString.lowercased() == defaults.string(forKey: "currentDevice")){
+                return 
+            }
             if(data.running != nil){
                 return 
             }else{

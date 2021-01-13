@@ -55,9 +55,11 @@ class ResponseHandler {
             }
         }
         if(response.tag != nil){
-            for i in 0..<MSHandlers.count {
+            var numberOfHandlers = MSHandlers.count
+            for i in 0..<numberOfHandlers{
                 if(MSHandlers[i].tag == UUID(uuidString: response.tag!)){
                     MSHandlers[i].receive(response: response.data!)
+                    numberOfHandlers -= 1
                     MSHandlers.remove(at: i)
                 }
             }
