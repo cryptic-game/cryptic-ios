@@ -74,7 +74,7 @@ struct TerminalView: View {
                     Spacer().frame(width: 20)
                     Text("\(viewModel.user)@\(viewModel.device)").foregroundColor(.green).font(.footnote)
                     Text(":").foregroundColor(.white).font(.footnote)
-                    Text("/").foregroundColor(.blue).font(.footnote)
+                    Text(viewModel.path).foregroundColor(.blue).font(.footnote)
                     Text("$").foregroundColor(.green).font(.footnote)
                     TextField("", text: $viewModel.input, onEditingChanged:{editingChanged in
                         if(editingChanged){
@@ -84,6 +84,7 @@ struct TerminalView: View {
                             let regexTouch = try! NSRegularExpression(pattern: "touch [a-zA-Z1-9]{1,63}[a-zA-Z0-9\\sb]{0,255}")
                             let regexMkdir = try! NSRegularExpression(pattern: "mkdir [a-zA-Z1-9]{1,63}")
                             let regexCat = try! NSRegularExpression(pattern: "cat [a-zA-Z]{1,63}")
+                            let regexCd = try! NSRegularExpression(pattern: "cd [a-zA-Z]{0,63}[..]{0,2}")
                             let range = NSRange(location: 0, length: viewModel.input.utf16.count)
                             if(viewModel.input == "help"){
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "help", output: [Row(id: UUID(), contentBeforeUUID: "help\t\t\tlist of all commands", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "status\t\tdisplays the number of online players", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "hostname\tchanges the name of the device", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "cd\t\t\tchanges the working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "ls\t\t\tshows files of the current working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "l\t\t\tshows files of the current working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "dir\t\t\tshows files of the current working directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "touch\t\tcreate a file", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "cat\t\t\treads out a file", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "rm\t\t\tdeletes a file or a directory", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "cp\t\t\tcopys a file", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "mv\t\t\tmoves a file", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "rename\t\trenames a file", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "mkdir\t\tcreates a direcotry", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "exit\t\t\tcloses the terminal or leaves another device", uuid: "", contentAfterUUID: ""),Row(id: UUID(), contentBeforeUUID: "quit\t\t\tcloses the terminal or leaves another device", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "clear\t\tclears the terminal", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "history\t\tshows the command history of the session", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "morphcoin\tshows wallet", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "pay\t\t\tsends money to another wallet", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "service\t\tcreates or uses services", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "spot\t\t\tspots other devices", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "connect\t\tconnects to other device", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "network\t\ttype `network` for further information", uuid: "", contentAfterUUID: ""), Row(id: UUID(), contentBeforeUUID: "info\t\t\tshows info of the current device", uuid: "", contentAfterUUID: "")]))
@@ -157,6 +158,7 @@ struct TerminalView: View {
                             }else if (regexTouch.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
                                 let lineItems = viewModel.input.split(separator: " ", maxSplits: 2)
                                 viewModel.touch(name: String(lineItems[1]), content: lineItems.count == 3 ? String(lineItems[2]) : "")
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
 
                             }else if (regexCat.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
@@ -167,6 +169,9 @@ struct TerminalView: View {
                                 viewModel.mkdir(name: String(lineItems[1]))
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
                                 viewModel.input = ""
+                            }else if (regexCd.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
+                                let lineItems = viewModel.input.split(separator: " ", maxSplits: 1)
+                                viewModel.cd(name: String(lineItems[1]))
                             }else{
 
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "\(viewModel.input)", output: [Row(id: UUID(), contentBeforeUUID: "Command could not be found.\nType `help` for a list of commands.", uuid: "", contentAfterUUID: "")]))

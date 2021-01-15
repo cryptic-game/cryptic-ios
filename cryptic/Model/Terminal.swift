@@ -12,6 +12,7 @@ class Terminal:Model{
     let defaults = UserDefaults.standard
     var viewModel:TerminalViewModel?
     var listServices:Bool
+    var listFiles:Bool
     var spotedDevice:String?
     var spotedDeviceName:String?
     var files:[FileModel] = []
@@ -21,6 +22,7 @@ class Terminal:Model{
         self.spotedDevice = nil
         self.spotedDeviceName = nil
         self.listServices = false
+        self.listFiles = false
         super.init(socket: socket)
         
     }
@@ -99,19 +101,28 @@ class Terminal:Model{
                 self.viewModel!.input = ""
             }
         }else if(data.files != nil){
-            if(data.files!.isEmpty){
-                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
-                self.viewModel!.input = ""
+            if(listFiles){
+                if(data.files!.isEmpty){
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
+                    self.viewModel!.input = ""
+                }else{
+                    var rows:[Row] = []
+                    self.files.removeAll()
+                    for file in data.files!{
+                        rows.append(Row(id: UUID(), contentBeforeUUID: file.filename, uuid: "", contentAfterUUID: ""))
+                        self.files.append(file)
+                    }
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:rows))
+                    self.viewModel!.input = ""
+                }
+                self.listFiles = false
             }else{
-                var rows:[Row] = []
                 self.files.removeAll()
                 for file in data.files!{
-                    rows.append(Row(id: UUID(), contentBeforeUUID: file.filename, uuid: "", contentAfterUUID: ""))
                     self.files.append(file)
                 }
-                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:rows))
-                self.viewModel!.input = ""
             }
+            
         }else{
             self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "An error occured", uuid: "", contentAfterUUID: "")]))
             self.viewModel!.input = ""
@@ -189,15 +200,15 @@ class Terminal:Model{
             
         }
     }
-    func list(parent_dir:String?){
+    func list(parent_dir:String?, doPrint:Bool){
         do {
             let uuid = UUID()
+            self.listFiles = doPrint
             let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "all"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: nil, is_directory:nil,content:nil )))
             print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
             handler.send()
-            
         }catch let error {
             print("Error serializing JSON:\n\(error)")
             
@@ -250,5 +261,66 @@ class Terminal:Model{
             print("Error serializing JSON:\n\(error)")
             
         }
+    }
+    func cd(name:String) {
+        if(name == ".."){
+            if(self.viewModel!.path == "/"){
+                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "You are already in the root directory", uuid: "", contentAfterUUID: "")]))
+                self.viewModel!.input = ""
+                return
+            }else{
+                var path:[String] = self.viewModel!.path.components(separatedBy: "/")
+                _ = path.popLast()
+                _ = self.viewModel!.pathMemory.popLast()
+                self.viewModel!.path = ""
+                for i in 0..<path.count{
+                    if(i == 0){
+                        self.viewModel!.path += String(path[i])
+                    }else{
+                        self.viewModel!.path += "/" + String(path[i])
+                    }
+                    
+                }
+                if(self.viewModel!.path == ""){
+                    self.viewModel!.path = "/"
+                    self.viewModel!.parent_dir = nil
+                }else{
+                    self.viewModel!.parent_dir = self.viewModel!.pathMemory[self.viewModel!.pathMemory.count - 1]
+                }
+                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
+                self.viewModel!.input = ""
+            }
+           
+           
+        }else{
+            for file in self.files{
+                if(file.filename == name){
+                    if(!file.is_directory){
+                        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "That is not a directory", uuid: "", contentAfterUUID: "")]))
+                        self.viewModel!.input = ""
+                        return
+                    }else{
+                        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
+                        self.viewModel?.parent_dir = file.uuid.uuidString.lowercased()
+                        if(self.viewModel!.path == "/"){
+                            self.viewModel!.path += file.filename
+                            self.viewModel!.parent_dir_name = file.filename
+                            self.viewModel!.pathMemory.append(file.uuid.uuidString.lowercased())
+                        }else{
+                            self.viewModel!.path += "/" + file.filename
+                            self.viewModel!.parent_dir_name = file.filename
+                            self.viewModel!.pathMemory.append(file.uuid.uuidString.lowercased())
+                        }
+                       
+                        self.viewModel!.input = ""
+                        return
+                    }
+                    
+                }
+            }
+            self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "That directory does not exist", uuid: "", contentAfterUUID: "")]))
+            self.viewModel!.input = ""
+        }
+        self.list(parent_dir: self.viewModel!.parent_dir, doPrint: false)
     }
 }

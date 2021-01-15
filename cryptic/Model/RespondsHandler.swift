@@ -58,8 +58,8 @@ class ResponseHandler {
             var numberOfHandlers = MSHandlers.count
             for i in 0..<numberOfHandlers{
                 if(MSHandlers[i].tag == UUID(uuidString: response.tag!)){
-                    MSHandlers[i].receive(response: response.data!)
                     numberOfHandlers -= 1
+                    MSHandlers[i].receive(response: response.data!)
                     MSHandlers.remove(at: i)
                 }
             }

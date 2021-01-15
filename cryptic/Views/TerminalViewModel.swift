@@ -15,6 +15,8 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     @Published var lastLogin:Double = UserDefaults.standard.double(forKey: "lastLogin")
     @Published var input:String = ""
     var parent_dir:String? = nil
+    var pathMemory:[String] = []
+    var parent_dir_name = ""
     
     
     @objc func getStatus()
@@ -38,9 +40,9 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     }
     func list(){
         if(self.path == "/"){
-            (model as! Terminal).list(parent_dir: nil)
+            (model as! Terminal).list(parent_dir: nil, doPrint: true)
         }else{
-            (model as! Terminal).list(parent_dir: parent_dir)
+            (model as! Terminal).list(parent_dir: parent_dir, doPrint: true)
         }
     }
     
@@ -53,11 +55,16 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func mkdir(name:String){
         (model as! Terminal).mkdir(name: name, parent_dir: self.parent_dir)
     }
+    
+    func cd(name:String){
+        (model as! Terminal).cd(name: name)
+    }
     init(socket:Socket) {
         super.init(model: Terminal(socket: socket))
         super.model.socket.viewModel = self
         (model as! Terminal).viewModel = self
         getStatus()
+        (model as! Terminal).list(parent_dir: self.parent_dir, doPrint: false)
         _ = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(self.getStatus), userInfo: nil, repeats: true)
         
     }
