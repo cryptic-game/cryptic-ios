@@ -221,12 +221,34 @@ class Terminal:Model{
     func cat(name:String){
         for file in self.files{
             if(file.filename == name){
-                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: file.content, uuid: "", contentAfterUUID: "")]))
-                self.viewModel!.input = ""
-                return
+                if(file.is_directory){
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "That is not a file", uuid: "", contentAfterUUID: "")]))
+                    self.viewModel!.input = ""
+                    return 
+                }else{
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: file.content, uuid: "", contentAfterUUID: "")]))
+                    self.viewModel!.input = ""
+                    return
+                }
+                
             }
         }
-        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
+        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "That file does not exist", uuid: "", contentAfterUUID: "")]))
         self.viewModel!.input = ""
+    }
+    
+    func mkdir(name:String, parent_dir:String?){
+        do {
+            let uuid = UUID()
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: name, is_directory:true, content:"" )))
+            print(String(data: req, encoding: .utf8)!)
+            let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
+            socket.msHandlers.append(handler)
+            handler.send()
+            
+        }catch let error {
+            print("Error serializing JSON:\n\(error)")
+            
+        }
     }
 }

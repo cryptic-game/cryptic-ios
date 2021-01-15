@@ -50,6 +50,9 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func cat(name:String){
         (model as! Terminal).cat(name: name)
     }
+    func mkdir(name:String){
+        (model as! Terminal).mkdir(name: name, parent_dir: self.parent_dir)
+    }
     init(socket:Socket) {
         super.init(model: Terminal(socket: socket))
         super.model.socket.viewModel = self

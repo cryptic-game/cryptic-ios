@@ -81,7 +81,8 @@ struct TerminalView: View {
                             print("started writing")
                         }else{
                             let regexHost = try! NSRegularExpression(pattern: "hostname [a-zA-Z]{1,14}")
-                            let regexTouch = try! NSRegularExpression(pattern: "touch [a-zA-Z1-9]{1,63} [a-zA-Z0-9]{0,255}")
+                            let regexTouch = try! NSRegularExpression(pattern: "touch [a-zA-Z1-9]{1,63}[a-zA-Z0-9\\sb]{0,255}")
+                            let regexMkdir = try! NSRegularExpression(pattern: "mkdir [a-zA-Z1-9]{1,63}")
                             let regexCat = try! NSRegularExpression(pattern: "cat [a-zA-Z]{1,63}")
                             let range = NSRange(location: 0, length: viewModel.input.utf16.count)
                             if(viewModel.input == "help"){
@@ -151,15 +152,21 @@ struct TerminalView: View {
                                 viewModel.list()
                             }else if (viewModel.input == "l"){
                                 viewModel.list()
+                            }else if (viewModel.input == "dir"){
+                                viewModel.list()
                             }else if (regexTouch.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
                                 let lineItems = viewModel.input.split(separator: " ", maxSplits: 2)
                                 viewModel.touch(name: String(lineItems[1]), content: lineItems.count == 3 ? String(lineItems[2]) : "")
-                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: "create file with name", uuid: "", contentAfterUUID: "\(lineItems[1])"), Row(id: UUID(), contentBeforeUUID: "and content:", uuid: "", contentAfterUUID: "\(lineItems.count == 3 ? lineItems[2] : "")")]))
                                 viewModel.input = ""
 
                             }else if (regexCat.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
                                 let lineItems = viewModel.input.split(separator: " ", maxSplits: 1)
                                 viewModel.cat(name: String(lineItems[1]))
+                            }else if (regexMkdir.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
+                                let lineItems = viewModel.input.split(separator: " ", maxSplits: 1)
+                                viewModel.mkdir(name: String(lineItems[1]))
+                                viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: viewModel.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
+                                viewModel.input = ""
                             }else{
 
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "\(viewModel.input)", output: [Row(id: UUID(), contentBeforeUUID: "Command could not be found.\nType `help` for a list of commands.", uuid: "", contentAfterUUID: "")]))
