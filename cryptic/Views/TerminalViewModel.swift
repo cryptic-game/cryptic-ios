@@ -14,7 +14,7 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     @Published var device:String = UserDefaults.standard.string(forKey: "currentDeviceName")!
     @Published var lastLogin:Double = UserDefaults.standard.double(forKey: "lastLogin")
     @Published var input:String = ""
-    
+    var parent_dir:String? = nil
     
     
     @objc func getStatus()
@@ -31,10 +31,24 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func create(name:String){
         (model as! Terminal).create(name: name)
     }
-    func list() {
+    func listServices() {
         (model as! Terminal).listServices = true
         (model as! Terminal).listAllServices(deviceUUID: UserDefaults.standard.string(forKey: "currentDevice")!)
 
+    }
+    func list(){
+        if(self.path == "/"){
+            (model as! Terminal).list(parent_dir: nil)
+        }else{
+            (model as! Terminal).list(parent_dir: parent_dir)
+        }
+    }
+    
+    func touch(name:String, content:String){
+        (model as! Terminal).touch(name: name, content: content, parent_dir: self.parent_dir)
+    }
+    func cat(name:String){
+        (model as! Terminal).cat(name: name)
     }
     init(socket:Socket) {
         super.init(model: Terminal(socket: socket))

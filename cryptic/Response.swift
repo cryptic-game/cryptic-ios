@@ -19,11 +19,15 @@ struct Response:Codable{
     let last:Double?
     
     
-    
 }
 
 struct ResponseData:Codable{
     let devices:[DeviceModel]?
+    let device:UUID?
+    let filename:String?
+    let content:String?
+    let parent_dir_uuid:UUID?
+    let is_directory:Bool?
     let services:[ServiceModel]?
     let uuid:UUID?
     let name:String?
@@ -33,7 +37,8 @@ struct ResponseData:Codable{
     let hardware:[Hardware]?
     let running:Bool?
     let error:String?
-
+    let files:[FileModel]?
+    
 }
 
 struct ServiceModel:Codable{
@@ -45,4 +50,13 @@ struct ServiceModel:Codable{
     let device:UUID
     let speed:Double?
     let part_owner:UUID?
+}
+
+struct FileModel:Codable {
+    let uuid:UUID
+    let device:UUID
+    let filename:String
+    let content:String
+    let parent_dir_uuid:UUID?
+    let is_directory:Bool
 }
