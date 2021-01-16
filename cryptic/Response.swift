@@ -38,6 +38,8 @@ struct ResponseData:Codable{
     let running:Bool?
     let error:String?
     let files:[FileModel]?
+    let ok:Bool?
+    let access:Bool?
     
 }
 

@@ -12,17 +12,22 @@ class Terminal:Model{
     let defaults = UserDefaults.standard
     var viewModel:TerminalViewModel?
     var listServices:Bool
+    var spotDevices:Bool
     var listFiles:Bool
+    var doBruteforce:Bool
     var spotedDevice:String?
     var spotedDeviceName:String?
     var files:[FileModel] = []
+    var bruteforceService:String = ""
     
     override init(socket:Socket) {
         self.viewModel = nil
         self.spotedDevice = nil
         self.spotedDeviceName = nil
         self.listServices = false
+        self.doBruteforce = false
         self.listFiles = false
+        self.spotDevices = false
         super.init(socket: socket)
         
     }
@@ -66,17 +71,24 @@ class Terminal:Model{
                     var portscanOn:Bool = false
                     var portscan:String = ""
                     for service in data.services!{
+                        if service.name == "bruteforce"{
+                            self.bruteforceService = service.uuid.uuidString.lowercased()
+                        }
                         if(service.name == "portscan"){
                             portscanOn = true
                             portscan = service.uuid.uuidString.lowercased()
                         }
                     }
-                    if(!portscanOn){
-                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t portscan failed", uuid: "", contentAfterUUID: ""))
-                        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:rows))
-                    }else{
-                        self.use(targetDevice: spotedDevice!, serviceUUID: portscan)
+                    if(spotDevices){
+                        if(!portscanOn){
+                            rows.append(Row(id: UUID(), contentBeforeUUID: "\t portscan failed", uuid: "", contentAfterUUID: ""))
+                            self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:rows))
+                        }else{
+                            self.use(targetDevice: spotedDevice!, serviceUUID: portscan)
+                        }
+                        self.spotDevices = false
                     }
+                  
                 }
 
                 }else {
@@ -86,9 +98,9 @@ class Terminal:Model{
                     rows.append(Row(id: UUID(), contentBeforeUUID: "• Services:", uuid: "", contentAfterUUID: ""))
                 for service in data.services!{
                     if service.name == "ssh"{
-                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t◦ ssh", uuid: "\(service.uuid)", contentAfterUUID: ""))
+                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t◦ ssh", uuid: "\(service.uuid.uuidString.lowercased())", contentAfterUUID: ""))
                     }else if service.name == "telnet"{
-                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t◦ telnet", uuid: "\(service.uuid)", contentAfterUUID: ""))
+                        rows.append(Row(id: UUID(), contentBeforeUUID: "\t◦ telnet", uuid: "\(service.uuid.uuidString.lowercased())", contentAfterUUID: ""))
                     }
                 }
                 self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:rows))
@@ -99,7 +111,13 @@ class Terminal:Model{
             if(data.error! == "already_own_this_service"){
                 self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Service has already been created", uuid: "", contentAfterUUID: "")]))
                 self.viewModel!.input = ""
+            }else if(data.error! == "attack_already_running"){
+                self.viewModel!.serviceRunning = true
+                self.viewModel!.stop()
+                self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "A bruteforce attack is already running", uuid: "", contentAfterUUID: "")]))
+                self.viewModel!.input = ""
             }
+
         }else if(data.files != nil){
             if(listFiles){
                 if(data.files!.isEmpty){
@@ -123,9 +141,37 @@ class Terminal:Model{
                 }
             }
             
+        }else if(data.ok != nil){
+            if(doBruteforce){
+                if(!viewModel!.serviceRunning){
+                    if(data.ok!){
+                        self.viewModel!.serviceRunning = true
+                        self.viewModel!.input = ""
+                    }else{
+                        self.viewModel!.serviceRunning = true
+                        self.viewModel!.stop()
+                        self.viewModel!.input = ""
+                    }
+                }
+             
+            }
         }else{
             self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "An error occured", uuid: "", contentAfterUUID: "")]))
             self.viewModel!.input = ""
+        }
+        if(data.access != nil){
+            if(doBruteforce){
+                self.viewModel!.serviceRunning = false
+                if(data.access!){
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Access granted use 'connect' to connect with device", uuid: "", contentAfterUUID: "")]))
+                    
+                }else{
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Access denied. Bruteforce attack was not successfull", uuid: "", contentAfterUUID: "")]))
+                   
+                }
+                self.viewModel?.input = ""
+                
+            }
         }
     }
             
@@ -133,9 +179,9 @@ class Terminal:Model{
     func spot()  {
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "spot"], data:MSData(device_uuid:nil, name: nil, service_uuid: nil, target_device: nil, parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil)))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "spot"], data:MSData(device_uuid:nil, name: nil, service_uuid: nil, target_device: nil, parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             print(String(data: req, encoding: .utf8)!)
-
+            self.spotDevices = true
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
             handler.send()
@@ -149,7 +195,7 @@ class Terminal:Model{
     func listAllServices(deviceUUID:String){
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["list"], data:MSData(device_uuid: deviceUUID, name: nil, service_uuid: nil, target_device: nil, parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil)))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["list"], data:MSData(device_uuid: deviceUUID, name: nil, service_uuid: nil, target_device: nil, parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil,target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
@@ -164,7 +210,7 @@ class Terminal:Model{
     func use(targetDevice:String, serviceUUID:String) {
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["use"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice")!,name: nil, service_uuid: serviceUUID, target_device: targetDevice, parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil)))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["use"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice")!,name: nil, service_uuid: serviceUUID, target_device: targetDevice, parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
             handler.send()
@@ -177,7 +223,7 @@ class Terminal:Model{
     func changeHost(new:String){
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "change_name"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: new, service_uuid: nil, target_device: nil,parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil)))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "change_name"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: new, service_uuid: nil, target_device: nil,parent_dir_uuid: "", filename: nil, is_directory:nil,content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
             handler.send()
@@ -190,7 +236,7 @@ class Terminal:Model{
     func create(name:String){
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: name,service_uuid: nil, target_device: nil, parent_dir_uuid: "",filename: nil, is_directory:nil,content:nil)))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: name,service_uuid: nil, target_device: nil, parent_dir_uuid: "",filename: nil, is_directory:nil,content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
             handler.send()
@@ -204,7 +250,7 @@ class Terminal:Model{
         do {
             let uuid = UUID()
             self.listFiles = doPrint
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "all"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: nil, is_directory:nil,content:nil )))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "all"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: nil, is_directory:nil,content:nil , target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
@@ -217,7 +263,7 @@ class Terminal:Model{
     func touch(name:String, content:String, parent_dir:String?){
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: name, is_directory:false, content:content )))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: name, is_directory:false, content:content , target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
@@ -251,7 +297,7 @@ class Terminal:Model{
     func mkdir(name:String, parent_dir:String?){
         do {
             let uuid = UUID()
-            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: name, is_directory:true, content:"" )))
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: parent_dir, filename: name, is_directory:true, content:"" , target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             print(String(data: req, encoding: .utf8)!)
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
             socket.msHandlers.append(handler)
@@ -322,5 +368,47 @@ class Terminal:Model{
             self.viewModel!.input = ""
         }
         self.list(parent_dir: self.viewModel!.parent_dir, doPrint: false)
+    }
+    
+    func bruteforce(device:String, service:String){
+        if(bruteforceService == ""){
+            self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "The bruteforce service has not been created yet", uuid: "", contentAfterUUID: "")]))
+            self.viewModel!.input = ""
+        }else{
+            do {
+                let uuid = UUID()
+                let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["bruteforce", "attack"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: bruteforceService, target_device: device,parent_dir_uuid: "", filename: nil, is_directory:nil, content:nil, target_service: service, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil )))
+                self.doBruteforce = true
+                print(String(data: req, encoding: .utf8)!)
+                let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
+                socket.msHandlers.append(handler)
+                handler.send()
+                
+            }catch let error {
+                print("Error serializing JSON:\n\(error)")
+                
+            }
+        }
+     
+    }
+    func stop(){
+        if(self.viewModel!.serviceRunning){
+            do {
+                let uuid = UUID()
+                let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["bruteforce", "stop"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: bruteforceService, target_device: nil,parent_dir_uuid: "", filename: nil, is_directory:nil, content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil )))
+                self.doBruteforce = true
+                print(String(data: req, encoding: .utf8)!)
+                let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
+                socket.msHandlers.append(handler)
+                handler.send()
+                
+            }catch let error {
+                print("Error serializing JSON:\n\(error)")
+                
+            }
+        }else{
+            self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Nothing to stop", uuid: "", contentAfterUUID: "")]))
+            self.viewModel!.input = ""
+        }
     }
 }

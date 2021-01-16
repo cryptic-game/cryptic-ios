@@ -55,12 +55,13 @@ class ResponseHandler {
             }
         }
         if(response.tag != nil){
-            var numberOfHandlers = MSHandlers.count
+            let numberOfHandlers = MSHandlers.count
+            //To do fix index out of range bug 
             for i in 0..<numberOfHandlers{
                 if(MSHandlers[i].tag == UUID(uuidString: response.tag!)){
-                    numberOfHandlers -= 1
+                    //numberOfHandlers -= 1
                     MSHandlers[i].receive(response: response.data!)
-                    MSHandlers.remove(at: i)
+                    //MSHandlers.remove(at: i)
                 }
             }
            

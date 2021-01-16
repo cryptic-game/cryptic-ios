@@ -14,6 +14,9 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     @Published var device:String = UserDefaults.standard.string(forKey: "currentDeviceName")!
     @Published var lastLogin:Double = UserDefaults.standard.double(forKey: "lastLogin")
     @Published var input:String = ""
+    @Published var serviceRunning:Bool
+    @Published var serviceRunningTime:Int
+    var timer:Timer?
     var parent_dir:String? = nil
     var pathMemory:[String] = []
     var parent_dir_name = ""
@@ -22,6 +25,12 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     @objc func getStatus()
     {
         super.model.getStatus()
+    }
+    @objc func serviceTimer()
+    {
+        if(serviceRunning){
+            self.serviceRunningTime += 1
+        }
     }
     func changeHost(new:String){
         (model as! Terminal).changeHost(new:new)
@@ -59,12 +68,32 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func cd(name:String){
         (model as! Terminal).cd(name: name)
     }
+    
+    func bruteforce(device:String, service:String){
+        (model as! Terminal).bruteforce(device:device, service:service)
+        self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.serviceTimer), userInfo: nil, repeats: true)
+        
+    }
+    func stop(){
+        (model as! Terminal).stop()
+        timer?.invalidate()
+        serviceRunningTime = 0
+        timer = nil
+        
+    }
+    func move(filename:String, remove:Bool, target:String){
+        print("To do move file")
+    }
     init(socket:Socket) {
+        self.serviceRunning = false
+        self.timer = nil
+        self.serviceRunningTime = 0
         super.init(model: Terminal(socket: socket))
         super.model.socket.viewModel = self
         (model as! Terminal).viewModel = self
         getStatus()
         (model as! Terminal).list(parent_dir: self.parent_dir, doPrint: false)
+        (model as! Terminal).listAllServices(deviceUUID: UserDefaults.standard.string(forKey: "currentDevice")!)
         _ = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(self.getStatus), userInfo: nil, repeats: true)
         
     }
