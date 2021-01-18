@@ -26,7 +26,7 @@ struct LoginView: View {
             }
            
             VStack{
-                Image("Logo").resizable().frame(width: screenWidth * 0.025 * 20.7, height: screenHeight * 0.01 * 28.2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                Image("Logo").resizable().frame(width: 150, height: 150, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                 
                 Spacer().frame(height: 50)
                 Text("Log In").font(.largeTitle).foregroundColor(.white).bold()

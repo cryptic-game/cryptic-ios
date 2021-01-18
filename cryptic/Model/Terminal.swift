@@ -81,6 +81,7 @@ class Terminal:Model{
                     }
                     if(spotDevices){
                         if(!portscanOn){
+                            rows.append(Row(id: UUID(), contentBeforeUUID: "\(spotedDeviceName!)", uuid: "\(spotedDevice!)", contentAfterUUID: ""))
                             rows.append(Row(id: UUID(), contentBeforeUUID: "\t portscan failed", uuid: "", contentAfterUUID: ""))
                             self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: "spot", output:rows))
                         }else{
@@ -410,5 +411,9 @@ class Terminal:Model{
             self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Nothing to stop", uuid: "", contentAfterUUID: "")]))
             self.viewModel!.input = ""
         }
+    }
+    func connect(device:String){
+        print("To do")
+        
     }
 }

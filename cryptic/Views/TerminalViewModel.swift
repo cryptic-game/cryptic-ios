@@ -16,6 +16,7 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     @Published var input:String = ""
     @Published var serviceRunning:Bool
     @Published var serviceRunningTime:Int
+    @Published var remoteConnection:Bool
     var timer:Timer?
     var parent_dir:String? = nil
     var pathMemory:[String] = []
@@ -84,10 +85,14 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func move(filename:String, remove:Bool, target:String){
         print("To do move file")
     }
+    func connect(device:String)  {
+        (model as! Terminal).connect(device:device)
+    }
     init(socket:Socket) {
         self.serviceRunning = false
         self.timer = nil
         self.serviceRunningTime = 0
+        self.remoteConnection = false
         super.init(model: Terminal(socket: socket))
         super.model.socket.viewModel = self
         (model as! Terminal).viewModel = self
