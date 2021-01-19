@@ -22,6 +22,8 @@ class Terminal:Model{
     var bruteforceService:String = ""
     var connectToDevice:Bool
     var connected:Bool
+    var createService:Bool
+    var backAtHome:Bool
     
     override init(socket:Socket) {
         self.viewModel = nil
@@ -33,6 +35,8 @@ class Terminal:Model{
         self.spotDevices = false
         self.connectToDevice = false
         self.connected = false
+        self.createService = false
+        self.backAtHome = false
         self.connectedDevices.append(defaults.string(forKey: "currentDevice")!)
         super.init(socket: socket)
         
@@ -43,6 +47,11 @@ class Terminal:Model{
                 return
             }
             if(data.name != nil){
+                if(createService){
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "service created", uuid: "", contentAfterUUID: "")]))
+                    self.viewModel!.input = ""
+                    createService = false
+                }
                 if(connected){
                     self.viewModel?.remoteConnection = true
                     self.viewModel?.device = data.name!
@@ -54,6 +63,7 @@ class Terminal:Model{
                     if(data.owner!.uuidString.lowercased() == defaults.string(forKey: "userUUID")!){
                         self.viewModel?.remoteConnection = false
                         defaults.setValue(data.uuid!.uuidString.lowercased(), forKey: "currentDevice")
+                        self.backAtHome = true
                         self.viewModel?.device = data.name!
                         self.viewModel?.input = ""
                     }
@@ -179,13 +189,9 @@ class Terminal:Model{
                         self.viewModel!.input = ""
                     }
                 }
-             
             }else if(connectToDevice){
                 if(data.ok!){
                     self.connected = true
-                }else if(self.connectedDevices.count == 1){
-                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Welcome back at home!", uuid: "", contentAfterUUID: "")]))
-                    self.viewModel!.input = ""
                 }else{
                     self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Access denied! You have no access to this device", uuid: "", contentAfterUUID: "")]))
                     self.viewModel!.input = ""
@@ -206,8 +212,13 @@ class Terminal:Model{
                    
                 }
                 self.viewModel?.input = ""
-                
+                doBruteforce = false
             }
+        }
+        if(backAtHome){
+            self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Welcome back at home!", uuid: "", contentAfterUUID: "")]))
+            self.viewModel!.input = ""
+            backAtHome = false
         }
     }
             
@@ -274,6 +285,7 @@ class Terminal:Model{
             let uuid = UUID()
             let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["create"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: name,service_uuid: nil, target_device: nil, parent_dir_uuid: "",filename: nil, is_directory:nil,content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
             let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
+            createService = true
             socket.msHandlers.append(handler)
             handler.send()
             

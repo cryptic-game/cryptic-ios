@@ -113,14 +113,14 @@ struct TerminalView: View {
 
                             }else if (viewModel.input == "service create portscan") {
                                 viewModel.create(name: "portscan")
-                                viewModel.input = ""
+                                
 
                             }else if (viewModel.input == "service create telnet") {
                                 viewModel.create(name: "telnet")
-                                viewModel.input = ""
+                               
                             }else if (viewModel.input == "service create bruteforce") {
                                 viewModel.create(name: "bruteforce")
-                                viewModel.input = ""
+                                
 
                             }else if (viewModel.input == "service create ssh") {
                                 viewModel.create(name: "ssh")
@@ -192,6 +192,9 @@ struct TerminalView: View {
                                 
 
                             }else if (viewModel.input == "exit"){
+                                viewModel.exit()
+                                
+                            }else if (viewModel.input == "quit"){
                                 viewModel.exit()
                                 
                             }else{

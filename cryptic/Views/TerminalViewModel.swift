@@ -100,6 +100,9 @@ final class TerminalViewModel:ViewModel, ObservableObject{
                 _ = (model as! Terminal).connectedDevices.popLast()
             }
             
+        }else{
+            self.output.append(TerminalOutput(id: UUID(), username: self.user, deviceName: self.device, path: self.path, command: input, output:[Row(id: UUID(), contentBeforeUUID: "Nothing to exit/quit", uuid: "", contentAfterUUID: "")]))
+            self.input = ""
         }
     }
     init(socket:Socket) {
