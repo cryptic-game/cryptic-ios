@@ -19,13 +19,11 @@ struct RegisterView: View {
                 VStack{
                     Image("Gradient").resizable().frame(height: screenHeight * 0.7  ).ignoresSafeArea()
                     Spacer()
-                }.navigationBarItems(
-                    leading: Button(action: {
-                        // Actions
-                    }, label: { Text("Button") }))
+                }
                
                 VStack{
-                    Image("Logo").resizable().frame(width: screenWidth * 0.025 * 16.7, height: screenHeight * 0.01 * 24.2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    Spacer().frame(height: 0)
+                    Image("Logo").resizable().frame(width: 100, height: 100, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                     
                     Spacer().frame(height: 50)
                     Text("Register").font(.largeTitle).foregroundColor(.white).bold()
@@ -34,16 +32,16 @@ struct RegisterView: View {
                         VStack{
                             Spacer()
                             Text("Hi welcome!\n Register to start playing cryptic. ").multilineTextAlignment(.center).foregroundColor(.white)
-                            Spacer().frame(height: 30)
+                            Spacer().frame(height: 10)
                             VStack{
                                 TextField("  Username", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
-                                Spacer().frame(height: 30)
+                                Spacer().frame(height: 15)
                                 SecureField("  Pasword", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
-                                Spacer().frame(height: 30)
+                                Spacer().frame(height: 15)
                                 SecureField("  Repeat pasword", text: $email).background(Color("ForegroundColor")).frame(width: screenWidth*0.8).cornerRadius(5)
-                                Spacer().frame(height:30)
-                                Text("The username must have between 2 and 32 characters.\n Your password has to be at least 8 characters long,\n it must contain at least one uppercase letter,\n one lowercase letter and one number.").multilineTextAlignment(.center).foregroundColor(.white).font(.system(size: 13))
-                                Spacer().frame(height:30)
+                                Spacer().frame(height:10)
+                                Text("The username must have between 2 and 32 characters.\n Your password has to be at least 8 characters long,\n it must contain at least one uppercase letter,\n one lowercase letter and one number.").multilineTextAlignment(.center).foregroundColor(.white).font(.system(size: 8))
+                                //Spacer().frame(height:30)
                                 
                                 
                             }
