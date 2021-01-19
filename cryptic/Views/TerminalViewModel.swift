@@ -88,6 +88,20 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func connect(device:String)  {
         (model as! Terminal).connect(device:device)
     }
+    
+    func exit(){
+        if(remoteConnection){
+            _ = (model as! Terminal).connectedDevices.popLast()
+            (model as! Terminal).connect(device: (model as! Terminal).connectedDevices[(model as! Terminal).connectedDevices.count - 1])
+            
+            if((model as! Terminal).connectedDevices.count == 1){
+                self.remoteConnection = false
+            }else{
+                _ = (model as! Terminal).connectedDevices.popLast()
+            }
+            
+        }
+    }
     init(socket:Socket) {
         self.serviceRunning = false
         self.timer = nil

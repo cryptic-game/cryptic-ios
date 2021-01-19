@@ -32,10 +32,10 @@ struct TerminalView: View {
                             VStack{
                                 HStack(alignment: .top, spacing: 0){
                                     Spacer().frame(width: 20)
-                                    Text("\(output.username)@\(output.deviceName)").foregroundColor(.green).font(.footnote)
+                                    Text("\(output.username)@\(output.deviceName)").foregroundColor(viewModel.remoteConnection ?.red: .green).font(.footnote)
                                     Text(":").foregroundColor(.white).font(.footnote)
                                     Text("\(output.path)").foregroundColor(.blue).font(.footnote)
-                                    Text("$").foregroundColor(.green).font(.footnote)
+                                    Text("$").foregroundColor(viewModel.remoteConnection ?.red: .green).font(.footnote)
                                     Text("\(output.command)").foregroundColor(.white).font(.footnote)
                                     Spacer()
                                 }
@@ -183,7 +183,7 @@ struct TerminalView: View {
                                 viewModel.bruteforce(device: String(lineItems[2]), service: String(lineItems[3]))
                                 
                             }else if (regexConnect.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
-                                let lineItems = viewModel.input.split(separator: " ", maxSplits: 1)
+                                let lineItems = viewModel.input.split(separator: " ", maxSplits: 2)
                                 viewModel.connect(device: String(lineItems[1]))
                                 
 
@@ -191,6 +191,9 @@ struct TerminalView: View {
                                 viewModel.stop()
                                 
 
+                            }else if (viewModel.input == "exit"){
+                                viewModel.exit()
+                                
                             }else{
 
                                 viewModel.output.append(TerminalOutput(id: UUID(), username: viewModel.user, deviceName: viewModel.device, path: viewModel.path, command: "\(viewModel.input)", output: [Row(id: UUID(), contentBeforeUUID: "Command could not be found.\nType `help` for a list of commands.", uuid: "", contentAfterUUID: "")]))

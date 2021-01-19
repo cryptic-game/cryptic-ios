@@ -30,7 +30,7 @@ struct MSData:Codable{
     let file_uuid:String?
     let new_parent_dir_uuid:String?
     let new_filename:String?
-    
+   
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -43,7 +43,6 @@ struct MSData:Codable{
         try container.encodeIfPresent(content, forKey: .content)
         try container.encodeIfPresent(target_service, forKey: .target_service)
         try container.encodeIfPresent(file_uuid, forKey: .file_uuid)
-        //try container.encodeIfPresent(new_parent_dir_uuid, forKey: .new_parent_dir_uuid)
         try container.encodeIfPresent(new_filename, forKey: .new_filename)
         switch parent_dir_uuid {
         case .some(let value):if(value == ""){return}else{ try container.encode(value, forKey: .parent_dir_uuid)}

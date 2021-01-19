@@ -18,7 +18,10 @@ class Terminal:Model{
     var spotedDevice:String?
     var spotedDeviceName:String?
     var files:[FileModel] = []
+    var connectedDevices:[String] = []
     var bruteforceService:String = ""
+    var connectToDevice:Bool
+    var connected:Bool
     
     override init(socket:Socket) {
         self.viewModel = nil
@@ -28,6 +31,9 @@ class Terminal:Model{
         self.doBruteforce = false
         self.listFiles = false
         self.spotDevices = false
+        self.connectToDevice = false
+        self.connected = false
+        self.connectedDevices.append(defaults.string(forKey: "currentDevice")!)
         super.init(socket: socket)
         
     }
@@ -36,6 +42,25 @@ class Terminal:Model{
             if(data.uuid?.uuidString.lowercased() == defaults.string(forKey: "currentDevice")){
                 return
             }
+            if(data.name != nil){
+                if(connected){
+                    self.viewModel?.remoteConnection = true
+                    self.viewModel?.device = data.name!
+                    self.viewModel?.input = ""
+                    defaults.setValue(data.uuid!.uuidString.lowercased(), forKey: "currentDevice")
+                    connectedDevices.append(data.uuid!.uuidString.lowercased())
+                    connected = false
+                }else if(connectToDevice){
+                    if(data.owner!.uuidString.lowercased() == defaults.string(forKey: "userUUID")!){
+                        self.viewModel?.remoteConnection = false
+                        defaults.setValue(data.uuid!.uuidString.lowercased(), forKey: "currentDevice")
+                        self.viewModel?.device = data.name!
+                        self.viewModel?.input = ""
+                    }
+                }
+                connectToDevice = false
+            }
+           
             if(data.filename != nil){
                 files.append(FileModel(uuid: data.uuid!, device: data.device!, filename: data.filename!, content: data.content!, parent_dir_uuid: data.parent_dir_uuid == nil ? nil:data.parent_dir_uuid!, is_directory: data.is_directory!))
                 return
@@ -155,6 +180,16 @@ class Terminal:Model{
                     }
                 }
              
+            }else if(connectToDevice){
+                if(data.ok!){
+                    self.connected = true
+                }else if(self.connectedDevices.count == 1){
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Welcome back at home!", uuid: "", contentAfterUUID: "")]))
+                    self.viewModel!.input = ""
+                }else{
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Access denied! You have no access to this device", uuid: "", contentAfterUUID: "")]))
+                    self.viewModel!.input = ""
+                }
             }
         }else{
             self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "An error occured", uuid: "", contentAfterUUID: "")]))
@@ -378,7 +413,7 @@ class Terminal:Model{
         }else{
             do {
                 let uuid = UUID()
-                let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["bruteforce", "attack"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: bruteforceService, target_device: device,parent_dir_uuid: "", filename: nil, is_directory:nil, content:nil, target_service: service, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil )))
+                let req = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["bruteforce", "attack"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: bruteforceService, target_device: device,parent_dir_uuid: "", filename: nil, is_directory:nil, content:nil, target_service: service, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
                 self.doBruteforce = true
                 print(String(data: req, encoding: .utf8)!)
                 let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
@@ -413,6 +448,29 @@ class Terminal:Model{
         }
     }
     func connect(device:String){
+        do {
+            let uuid = UUID()
+            let uuid2 = UUID()
+            let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["device", "info"], data:MSData(device_uuid: device, name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: "", filename: nil, is_directory:nil, content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
+            let req2 = try encoder.encode(MSRequest(tag: uuid, ms: "service", endpoint: ["part_owner"], data:MSData(device_uuid: device, name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: "", filename: nil, is_directory:nil, content:nil, target_service: nil, file_uuid: nil, new_parent_dir_uuid: "", new_filename: nil)))
+            print(String(data: req, encoding: .utf8)!)
+            print(String(data: req2, encoding: .utf8)!)
+            connectToDevice = true
+            let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
+            let handler2 = MSHandler(socket: self.socket, tag: uuid2, request: req2, model: self)
+            socket.msHandlers.append(handler)
+            socket.msHandlers.append(handler2)
+            handler2.send()
+            do{
+                sleep(1)
+            }
+            handler.send()
+            
+            
+        }catch let error {
+            print("Error serializing JSON:\n\(error)")
+            
+        }
         print("To do")
         
     }
