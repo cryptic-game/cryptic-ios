@@ -86,6 +86,7 @@ struct TerminalView: View {
                             }
                             let regexHost = try! NSRegularExpression(pattern: "hostname [a-zA-Z]{1,14}")
                             let regexTouch = try! NSRegularExpression(pattern: "touch [a-zA-Z1-9]{1,63}[a-zA-Z0-9\\sb]{0,255}")
+                            let regexRemove = try! NSRegularExpression(pattern: "rm [a-zA-Z1-9]{1,63}")
                             let regexMkdir = try! NSRegularExpression(pattern: "mkdir [a-zA-Z1-9]{1,63}")
                             let regexCat = try! NSRegularExpression(pattern: "cat [a-zA-Z]{1,63}")
                             let regexCd = try! NSRegularExpression(pattern: "cd [a-zA-Z]{0,63}[..]{0,2}")
@@ -185,8 +186,9 @@ struct TerminalView: View {
                             }else if (regexConnect.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
                                 let lineItems = viewModel.input.split(separator: " ", maxSplits: 2)
                                 viewModel.connect(device: String(lineItems[1]))
-                                
-
+                            }else if (regexRemove.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
+                                let lineItems = viewModel.input.split(separator: " ", maxSplits: 1)
+                                viewModel.remove(filename: String(lineItems[1]))
                             }else if (viewModel.input == "stop"){
                                 viewModel.stop()
                                 

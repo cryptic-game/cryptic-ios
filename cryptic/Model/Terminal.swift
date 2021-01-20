@@ -23,6 +23,7 @@ class Terminal:Model{
     var connectToDevice:Bool
     var connected:Bool
     var createService:Bool
+    var removeFile:Bool
     var backAtHome:Bool
     
     override init(socket:Socket) {
@@ -33,6 +34,7 @@ class Terminal:Model{
         self.doBruteforce = false
         self.listFiles = false
         self.spotDevices = false
+        self.removeFile = false
         self.connectToDevice = false
         self.connected = false
         self.createService = false
@@ -196,6 +198,12 @@ class Terminal:Model{
                     self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "Access denied! You have no access to this device", uuid: "", contentAfterUUID: "")]))
                     self.viewModel!.input = ""
                 }
+            }else if(removeFile){
+                if(data.ok!){
+                    self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "", uuid: "", contentAfterUUID: "")]))
+                    self.viewModel!.input = ""
+                }
+                removeFile = false
             }
         }else{
             self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "An error occured", uuid: "", contentAfterUUID: "")]))
@@ -484,6 +492,29 @@ class Terminal:Model{
             
         }
         print("To do")
+        
+    }
+    func remove(filename:String){
+        for file in files{
+            if(file.filename == filename){
+                do {
+                    removeFile = true
+                    let uuid = UUID()
+                    let req = try encoder.encode(MSRequest(tag: uuid, ms: "device", endpoint: ["file", "delete"], data:MSData(device_uuid: defaults.string(forKey: "currentDevice"), name: nil,service_uuid: nil, target_device: nil,parent_dir_uuid: "", filename: nil, is_directory:nil, content:nil, target_service: nil, file_uuid: file.uuid.uuidString.lowercased(), new_parent_dir_uuid: "", new_filename: nil )))
+                    print(String(data: req, encoding: .utf8)!)
+                    let handler = MSHandler(socket: self.socket, tag: uuid, request: req, model: self)
+                    socket.msHandlers.append(handler)
+                    handler.send()
+                    
+                }catch let error {
+                    print("Error serializing JSON:\n\(error)")
+                    
+                }
+                return
+            }
+        }
+        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:[Row(id: UUID(), contentBeforeUUID: "That file does not exist", uuid: "", contentAfterUUID: "")]))
+        self.viewModel!.input = ""
         
     }
 }
