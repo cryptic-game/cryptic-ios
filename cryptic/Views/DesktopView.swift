@@ -17,9 +17,8 @@ struct DesktopView: View {
             TerminalView(socket:socket).tabItem { Image(systemName: "terminal") }
             DeviceRunningProcessesView().tabItem { Image(systemName: "externaldrive.connected.to.line.below") }
             DeviceRunningProcessesView().tabItem { Image(systemName: "folder") }
-            DeviceRunningProcessesView().tabItem { Image(systemName: "bitcoinsign.circle") }
-            DeviceRunningProcessesView().tabItem { Image(systemName: "folder") }
-            DeviceRunningProcessesView().tabItem { Image(systemName: "folder") }
+            MinerView().tabItem { Image(systemName: "bitcoinsign.circle") }
+           
 
         }
     }
