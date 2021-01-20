@@ -15,7 +15,7 @@ struct DeviceSpecificFactorsView: View {
                 Text("Specific Factors").foregroundColor(Color("ForegroundColor")).bold().font(.title)
                 Spacer()
             }
-            Spacer().frame(height: 20)
+            Spacer().frame(height: 0)
             HStack{
                 Spacer().frame(width: 20)
                 VStack(alignment: .leading){

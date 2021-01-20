@@ -33,28 +33,28 @@ struct DashboardView: View {
                 }
                
                 ScrollView(.horizontal){
-                    Spacer().frame(height:20)
+                    Spacer().frame(height:5)
                     HStack(spacing:20){
                         Spacer()
                         ForEach(0..<4){ i in
                             ZStack{
-                                Rectangle().frame(width: screenWidth * 0.3, height: screenHeight * 0.15).cornerRadius(25).shadow(color: .gray, radius: 3).foregroundColor(Color(chosen == i ?"ForegroundColor":"SecondaryColor")).onTapGesture {
+                                Rectangle().frame(width: 100, height: 100).cornerRadius(25).shadow(color: .gray, radius: 3).foregroundColor(Color(chosen == i ?"ForegroundColor":"SecondaryColor")).onTapGesture {
                                     chosen = i;
                                 }
                                 if(i == 0){
-                                    Image("Laptop").resizable().frame(width: 100, height:100).onTapGesture {
+                                    Image("Laptop").resizable().frame(width: 80, height:80).onTapGesture {
                                         chosen = i;
                                     }
                                 }else if(i==1){
-                                    Image("Server").resizable().frame(width: 100, height:100).onTapGesture {
+                                    Image("Server").resizable().frame(width: 80, height:80).onTapGesture {
                                         chosen = i;
                                     }
                                 }else if(i==2){
-                                    Image("ChangeLog").resizable().frame(width: 100, height:100).onTapGesture {
+                                    Image("ChangeLog").resizable().frame(width: 80, height:80).onTapGesture {
                                         chosen = i;
                                     }
                                 }else if(i == 3){
-                                    Image("Settings").resizable().frame(width: 100, height:100).onTapGesture {
+                                    Image("Settings").resizable().frame(width: 80, height:80).onTapGesture {
                                         chosen = i;
                                     }
                                 }

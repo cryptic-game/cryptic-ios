@@ -28,26 +28,27 @@ struct DeviceView: View {
                 HStack{
                     Spacer()
                     VStack{
-                        Image("ComputerOnline").onTapGesture {
+                        Image("ComputerOnline").resizable().frame(width: 80, height: 80).onTapGesture {
                             DispatchQueue.main.async {
                                 content.showDesktop = true
                             }
                         }
+                        Spacer().frame(height: 0)
                         Text(viewModel.device?.name ?? "").foregroundColor(.white).bold().font(.title)
-                        Spacer().frame(height: 40)
+                        Spacer().frame(height: 20)
                         
                         
                     }
                     Spacer()
-                    Image("OnButton").resizable().frame(width: 100, height: 100)
+                    Image("OnButton").resizable().frame(width: 80, height: 80)
                     Spacer()
-                }
-                
+                }.frame(height: UIScreen.main.bounds.height * 0.2, alignment: .center)
+                Spacer().frame(height:0)
                 TabView{
                     DeviceSpecificationView(viewModel: self.viewModel)
                     DeviceSpecificFactorsView()
                     DeviceRunningProcessesView()
-                }.tabViewStyle(PageTabViewStyle())
+                }.tabViewStyle(PageTabViewStyle()).frame(height: 200)
                 }
             }.background(Color("BackgroundColor")).onAppear{
             isLoading = true
