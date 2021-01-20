@@ -517,4 +517,12 @@ class Terminal:Model{
         self.viewModel!.input = ""
         
     }
+    func info(){
+        var rows:[Row] = []
+        rows.append(Row(id: UUID(), contentBeforeUUID: "Username:\t \(defaults.string(forKey: "username")!) ", uuid: "", contentAfterUUID: ""))
+        rows.append(Row(id: UUID(), contentBeforeUUID: "Host: \t\t \(viewModel!.device)", uuid: "", contentAfterUUID: ""))
+        rows.append(Row(id: UUID(), contentBeforeUUID: "Address: \t", uuid: "\(defaults.string(forKey: "currentDevice")!)", contentAfterUUID: ""))
+        self.viewModel!.output.append(TerminalOutput(id: UUID(), username: self.viewModel!.user, deviceName: self.viewModel!.device, path: self.viewModel!.path, command: viewModel!.input, output:rows))
+        self.viewModel!.input = ""
+    }
 }

@@ -91,6 +91,9 @@ final class TerminalViewModel:ViewModel, ObservableObject{
     func remove(filename:String){
         (model as! Terminal).remove(filename:filename)
     }
+    func info(){
+        (model as! Terminal).info()
+    }
     func exit(){
         if(remoteConnection){
             _ = (model as! Terminal).connectedDevices.popLast()

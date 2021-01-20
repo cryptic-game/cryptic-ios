@@ -189,6 +189,8 @@ struct TerminalView: View {
                             }else if (regexRemove.firstMatch(in: viewModel.input, options: [], range: range) != nil) {
                                 let lineItems = viewModel.input.split(separator: " ", maxSplits: 1)
                                 viewModel.remove(filename: String(lineItems[1]))
+                            }else if(viewModel.input == "info"){
+                                viewModel.info()
                             }else if (viewModel.input == "stop"){
                                 viewModel.stop()
                                 
